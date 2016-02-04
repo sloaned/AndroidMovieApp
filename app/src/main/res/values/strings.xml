@@ -18,5 +18,6 @@
     <string name="pref_sort_label_low_rating">Lowest Rated</string>
     <string name="title_activity_search">SearchActivity</string>
     <string name="search_hint">Search for a movie</string>
+    <string name="action_search">Search</string>
 
 </resources>

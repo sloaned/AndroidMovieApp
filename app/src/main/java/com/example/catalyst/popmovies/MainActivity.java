@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main, menu);
 
         SearchManager searchManager = (SearchManager) getSystemService (Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);
@@ -60,13 +60,19 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
-        /*
+
         if (id == R.id.action_search) {
             startActivity(new Intent(this, SearchActivity.class));
             return true;
         }
-         */
+
 
         return super.onOptionsItemSelected(item);
     }
+
+   /* @Override
+    public boolean onQueryTextChange(String newText) {
+        startActivity(new Intent(this, SearchActivity.class));
+        return true;
+    }*/
 }

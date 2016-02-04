@@ -29,4 +29,12 @@ public class UriBuilder {
         url += "&api_key=a40aba8d089b515623b55cc305b76b74";
         return url;
     }
+
+    public String getSearchUrl(String searchTerm) {
+        String url = "https://api.themoviedb.org/3/";
+        url += "search/movie?query=";
+        url += searchTerm;
+        url += "&api_key=a40aba8d089b515623b55cc305b76b74";
+        return url;
+    }
 }

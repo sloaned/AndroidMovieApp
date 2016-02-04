@@ -8,11 +8,11 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MovieFragment"
     tools:showIn="@layout/activity_main">
-    <SearchView
+    <!-- <SearchView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/menu_search">
-    </SearchView>
+    </SearchView> -->
     <ListView
         android:id="@+id/listview_movies"
         android:layout_width="fill_parent"
