@@ -33,8 +33,6 @@ public class MainActivity extends AppCompatActivity {
 
         SQLiteDatabase movieDatabase = openOrCreateDatabase(MovieContract.DATABASE_NAME,MODE_PRIVATE, null);
 
-
-
     }
 
     @Override
@@ -61,10 +59,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        if (id == R.id.action_search) {
-            startActivity(new Intent(this, SearchActivity.class));
+      /*  if (id == R.id.action_search) {
+            Intent intent = new Intent(this, SearchActivity.class);
+                 //   .putExtra("Movies", film);
+            startActivity(intent);
             return true;
-        }
+        }*/
 
 
         return super.onOptionsItemSelected(item);

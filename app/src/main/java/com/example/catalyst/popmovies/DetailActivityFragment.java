@@ -39,7 +39,12 @@ public class DetailActivityFragment extends Fragment {
             String movieInfo = movie.getTitle() + "\n\nReleased: " + movie.getRelease_date() + "\n\nAverage Rating: " + movie.getVote_average()
                     + "\n\n" + movie.getOverview();
             ImageView imageView = (ImageView) rootView.findViewById(R.id.movie_poster);
-            Picasso.with(getContext()).load(movie.getPoster()).into(imageView);
+            if (movie.getPoster() != null) {
+                Picasso.with(getContext()).load(movie.getPoster()).into(imageView);
+            } else {
+                imageView.setImageResource(R.drawable.blankmovie);
+            }
+
             FlowTextView flowTextView = (FlowTextView) rootView.findViewById(R.id.detail_text);
             flowTextView.setText(movieInfo);
            /* RatingBar ratingBar = (RatingBar) rootView.findViewById(R.id.user_rating_bar);

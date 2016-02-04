@@ -77,6 +77,7 @@ public class MovieFragment extends Fragment {
         //movieAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_pop_movies, R.id.list_pop_movies_posterview, new ArrayList<String>()); // new ArrayList<String>()
         listView = (ListView) rootView.findViewById(R.id.listview_movies);
         adapter = new CustomListAdapter(this.getActivity(), movieList);
+        adapter.notifyDataSetChanged();
         listView.setAdapter(adapter);
 
 
@@ -161,8 +162,8 @@ public class MovieFragment extends Fragment {
                             String overview;
                             String release_date;
                             double vote_average;
-                            String poster;
-                            String thumbnail;
+                            String poster = null;
+                            String thumbnail = null;
                             JSONObject film = new JSONObject();
                             try{
                                 film = movieArray.getJSONObject(i);
@@ -170,8 +171,11 @@ public class MovieFragment extends Fragment {
                                 overview = film.getString("overview");
                                 release_date = film.getString("release_date");
                                 vote_average = film.getDouble("vote_average");
-                                poster = "http://image.tmdb.org/t/p/" + "w185/" + film.getString("poster_path");
-                                thumbnail = "http://image.tmdb.org/t/p/" + "w45/" + film.getString("poster_path");
+                                if(film.getString("poster_path") != null) {
+                                    poster = "http://image.tmdb.org/t/p/" + "w185/" + film.getString("poster_path");
+                                    thumbnail = "http://image.tmdb.org/t/p/" + "w45/" + film.getString("poster_path");
+                                }
+
 
                                 Movie movie = new Movie();
                                 movie.setTitle(title);
@@ -180,7 +184,7 @@ public class MovieFragment extends Fragment {
                                 movie.setOverview(overview);
                                 movie.setPoster(poster);
                                 movie.setThumbnail(thumbnail);
-                                System.out.println("movies[" + (i + ((page - 1) * MOVIES_PER_PAGE)) + "] = " + movie.getTitle());
+                                //System.out.println("movies[" + (i + ((page - 1) * MOVIES_PER_PAGE)) + "] = " + movie.getTitle());
                                 movieList.add(movie);
                                 DBHelper dbHelper = new DBHelper(getContext());
                                 if(!dbHelper.doesMovieExist(movie)) {

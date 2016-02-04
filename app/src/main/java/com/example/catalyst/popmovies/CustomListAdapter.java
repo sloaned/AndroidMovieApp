@@ -24,6 +24,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,7 +33,7 @@ import java.util.List;
 public class CustomListAdapter extends BaseAdapter {
     private Activity activity;
     private LayoutInflater inflater;
-    private List<Movie> movieItems;
+    private List<Movie> movieItems = new ArrayList<Movie>();
     ImageLoader imageLoader = AppController.getInstance().getmImageLoader();
 
     public CustomListAdapter(Activity activity, List<Movie> movieItems) {
@@ -62,24 +63,35 @@ public class CustomListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
+        String viewId = parent.getResources().getResourceEntryName(parent.getId());
         if (inflater == null) {
             inflater = (LayoutInflater) activity
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.list_pop_movies, null);
+            if(viewId.equals("listview_movies")) {
+                convertView = inflater.inflate(R.layout.list_pop_movies, null);
+            }
+            else if (viewId.equals("listview_search_movies")) {
+                convertView = inflater.inflate(R.layout.list_search_results, null);
+            }
         }
         if (imageLoader == null) {
             imageLoader = AppController.getInstance().getmImageLoader();
         }
-        NetworkImageView thumbnail = (NetworkImageView) convertView
-                .findViewById(R.id.poster_icon);
+
         TextView title = (TextView) convertView.findViewById(R.id.movie_title);
         TextView rating = (TextView) convertView.findViewById(R.id.movie_rating);
         TextView year = (TextView) convertView.findViewById(R.id.movie_year);
         RatingBar ratingBar = (RatingBar) convertView.findViewById(R.id.movie_rating_bar);
         Movie m = movieItems.get(position);
-        thumbnail.setImageUrl(m.getThumbnail(), imageLoader);
+
+        if(m.getThumbnail() != null) {
+            NetworkImageView thumbnail = (NetworkImageView) convertView
+                    .findViewById(R.id.poster_icon);
+            thumbnail.setImageUrl(m.getThumbnail(), imageLoader);
+        }
+
 
         title.setText(m.getTitle());
         rating.setText("Rating: " + Double.toString(m.getVote_average()));

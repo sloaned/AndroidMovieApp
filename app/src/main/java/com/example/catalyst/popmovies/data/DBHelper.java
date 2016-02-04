@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * Created by dsloane on 2/1/2016.
  */
 public class DBHelper extends SQLiteOpenHelper {
-
+    private Context context;
     final String SQL_CREATE_MOVIE_TABLE = "CREATE TABLE IF NOT EXISTS " + MovieContract.MovieEntry.TABLE_NAME + " (" +
             MovieContract.MovieEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             MovieContract.MovieEntry.COLUMN_TITLE + " REAL NOT NULL, " +
@@ -27,6 +27,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public DBHelper(Context context) {
         super(context, MovieContract.DATABASE_NAME, null, 1);
+        this.context = context;
     }
 
     @Override
@@ -50,24 +51,28 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, movie.getPoster());
         contentValues.put(MovieContract.MovieEntry.COLUMN_USER_RATING, movie.getUser_rating());
         db.insert(MovieContract.MovieEntry.TABLE_NAME, null, contentValues);
+        db.close();
         return true;
     }
 
     public Cursor getMovieById(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + MovieContract.MovieEntry.TABLE_NAME + " WHERE id=" +id+"", null );
+        //db.close();
         return res;
     }
 
     public Cursor getMovieByInfo(Movie movie) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + MovieContract.MovieEntry.TABLE_NAME + " WHERE " + MovieContract.MovieEntry.COLUMN_TITLE + " = \"" + movie.getTitle() + "\" AND " + MovieContract.MovieEntry.COLUMN_RELEASE_DATE + " = \"" + movie.getRelease_date() + "\"", null);
+        //db.close();
         return res;
     }
 
     public int numberOfRows() {
         SQLiteDatabase db = this.getReadableDatabase();
         int numRows = (int) DatabaseUtils.queryNumEntries(db, MovieContract.MovieEntry.TABLE_NAME);
+        db.close();
         return numRows;
     }
 
@@ -81,6 +86,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, movie.getPoster());
         contentValues.put(MovieContract.MovieEntry.COLUMN_USER_RATING, movie.getUser_rating());
         db.update(MovieContract.MovieEntry.TABLE_NAME, contentValues, MovieContract.MovieEntry._ID + " = ? ", new String[] { Integer.toString(id) } );
+        db.close();
         return true;
     }
 
@@ -107,6 +113,7 @@ public class DBHelper extends SQLiteOpenHelper {
             movieList.add(movie);
             res.moveToNext();
         }
+        db.close();
         return movieList;
     }
 
@@ -126,6 +133,7 @@ public class DBHelper extends SQLiteOpenHelper {
             movieList.add(film);
             res.moveToNext();
         }
+        db.close();
         if(movieList.size() > 0) {
             return true;
         }
