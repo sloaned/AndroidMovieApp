@@ -40,7 +40,7 @@ public class MovieContract {
 
         public static final String COLUMN_OVERVIEW = "overview";
 
-        public static final String COLUMN_USER_RATING = "user_rating";
+        public static final String COLUMN_FAVORITE = "favorite";
 
     }
 

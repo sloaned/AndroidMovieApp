@@ -93,7 +93,7 @@ public class MovieFragment extends Fragment {
                film.setOverview(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_OVERVIEW)));
                film.setVote_average(res.getDouble(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE)));
                film.setPoster(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_PATH)));
-               film.setUser_rating(res.getDouble(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_USER_RATING)));
+               film.setFavorite(res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE)));
                film.setId(res.getInt(res.getColumnIndex(MovieContract.MovieEntry._ID)));
                System.out.println(film.getTitle());
                /*String movieInfo = movie.getTitle() + "\n\n" + movie.getRelease_date() + "\n\n" +
@@ -181,12 +181,19 @@ public class MovieFragment extends Fragment {
                                 movie.setOverview(overview);
                                 movie.setPoster(poster);
                                 movie.setThumbnail(thumbnail);
-                                //System.out.println("movies[" + (i + ((page - 1) * MOVIES_PER_PAGE)) + "] = " + movie.getTitle());
-                                movieList.add(movie);
+
                                 DBHelper dbHelper = new DBHelper(getContext());
                                 if(!dbHelper.doesMovieExist(movie)) {
                                     dbHelper.addMovie(movie);
                                 }
+                                Cursor res = dbHelper.getMovieByInfo(movie);
+                                res.moveToFirst();
+
+                                movie.setFavorite(res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE)));
+                                movie.setId(res.getInt(res.getColumnIndex(MovieContract.MovieEntry._ID)));
+
+                                movieList.add(movie);
+
                             } catch (JSONException e) {
                                 Log.e(LOG_TAG, "Error: " + e.getMessage());
                             }

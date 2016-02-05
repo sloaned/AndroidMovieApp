@@ -40,7 +40,6 @@ public class DetailActivityFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         if (intent != null && intent.hasExtra("Movie")) {
             movie = (Movie) intent.getSerializableExtra("Movie");
-            System.out.println("here's the user rating: " + movie.getUser_rating());
             System.out.println("here's the id number: " + movie.getId());
             String movieInfo = movie.getTitle() + "\n\nReleased: " + movie.getRelease_date() + "\n\nAverage Rating: " + movie.getVote_average()
                     + "\n\n" + movie.getOverview();
