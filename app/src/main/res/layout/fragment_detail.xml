@@ -36,6 +36,7 @@
                 android:isIndicator="false"
                 style="?android:attr/ratingBarStyleSmall"/>
             -->
+
         </uk.co.deanwild.flowtextview.FlowTextView>
 
 

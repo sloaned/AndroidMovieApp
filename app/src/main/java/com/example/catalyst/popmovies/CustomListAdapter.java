@@ -75,6 +75,7 @@ public class CustomListAdapter extends BaseAdapter {
             else if (viewId.equals("listview_search_movies")) {
                 convertView = inflater.inflate(R.layout.list_search_results, null);
             }
+            //convertView = inflater.inflate(R.layout.list_pop_movies, null);
         }
         if (imageLoader == null) {
             imageLoader = AppController.getInstance().getmImageLoader();
@@ -85,7 +86,7 @@ public class CustomListAdapter extends BaseAdapter {
         TextView year = (TextView) convertView.findViewById(R.id.movie_year);
         RatingBar ratingBar = (RatingBar) convertView.findViewById(R.id.movie_rating_bar);
         Movie m = movieItems.get(position);
-
+        System.out.println("thumbnail: " + m.getThumbnail());
         if(m.getThumbnail() != null) {
             NetworkImageView thumbnail = (NetworkImageView) convertView
                     .findViewById(R.id.poster_icon);

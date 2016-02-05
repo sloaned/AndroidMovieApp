@@ -56,18 +56,18 @@ public class SearchFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
 
-        listView = (ListView) rootView.findViewById(R.id.listview_search_movies);
+        listView = (ListView) rootView.findViewById(R.id.listview_search_movies); //listview_search_movies
         adapter = new CustomListAdapter(this.getActivity(), movies);
-        //adapter.notifyDataSetChanged();
+       // adapter.notifyDataSetChanged();
         listView.setAdapter(adapter);
+        listView.requestLayout();
 
-        System.out.println("in the search fragment");
         Intent intent = getActivity().getIntent();
-        System.out.println(intent);
+        //System.out.println(intent);
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             query = query.replace(" ", "%20");
-            System.out.println("query = " + query);
+            //System.out.println("query = " + query);
             searchMovies(query);
         }
 
@@ -76,26 +76,9 @@ public class SearchFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Movie movie = (Movie) adapter.getItem(position);
-                DBHelper dbHelper = new DBHelper(getContext());
-                Cursor res = dbHelper.getMovieByInfo(movie);
-                System.out.println(res);
-                Movie film = new Movie();
-                res.moveToFirst();
-                film.setTitle(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE)));
-                film.setRelease_date(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE)));
-                film.setOverview(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_OVERVIEW)));
-                film.setVote_average(res.getDouble(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE)));
-                film.setPoster(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_PATH)));
-                film.setUser_rating(res.getDouble(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_USER_RATING)));
-                film.setId(res.getInt(res.getColumnIndex(MovieContract.MovieEntry._ID)));
-                System.out.println(film.getTitle());
-               /*String movieInfo = movie.getTitle() + "\n\n" + movie.getRelease_date() + "\n\n" +
-                       movie.getOverview() + "\n\n" + movie.getVote_average();
-               System.out.println(movieInfo);*/
-
 
                 Intent intent = new Intent(getActivity(), DetailActivity.class)
-                        .putExtra("Movie", film);
+                        .putExtra("Movie", movie);
                 startActivity(intent);
             }
         });
@@ -113,8 +96,6 @@ public class SearchFragment extends Fragment {
         String url = uriBuilder.getSearchUrl(query);
         String tag_json_obj = "json_obj_req";
         final String TMDB_RESULTS = "results";
-        System.out.println("now in searchMovies");
-        System.out.println("url = " + url);
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -143,10 +124,10 @@ public class SearchFragment extends Fragment {
                                 release_date = film.getString("release_date");
                                 vote_average = film.getDouble("vote_average");
 
-                                if(film.getString("poster_path") != null) {
+                                if(!film.getString("poster_path").equals(null)) {
                                     poster = "http://image.tmdb.org/t/p/" + "w185/" + film.getString("poster_path");
                                     thumbnail = "http://image.tmdb.org/t/p/" + "w45/" + film.getString("poster_path");
-                                }
+                                } else { System.out.println("null poster!"); }
 
 
                                 System.out.println(title);
@@ -159,11 +140,20 @@ public class SearchFragment extends Fragment {
                                 movie.setPoster(poster);
                                 movie.setThumbnail(thumbnail);
 
-                                movies.add(movie);
                                 DBHelper dbHelper = new DBHelper(getActivity());  // not context
                                 if(!dbHelper.doesMovieExist(movie)) {
                                     dbHelper.addMovie(movie);
                                 }
+
+                                Cursor res = dbHelper.getMovieByInfo(movie);
+                                //System.out.println(res);
+                                res.moveToFirst();
+
+                                movie.setFavorite(res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE)));
+                                movie.setId(res.getInt(res.getColumnIndex(MovieContract.MovieEntry._ID)));
+
+                                movies.add(movie);
+
                             }catch (JSONException e) {
                                 Log.e(LOG_TAG, "Error: " + e.getMessage());
                             }

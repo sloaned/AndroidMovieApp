@@ -65,17 +65,18 @@ public class MovieFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        //movieAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_pop_movies, R.id.list_pop_movies_posterview, new ArrayList<String>()); // new ArrayList<String>()
         listView = (ListView) rootView.findViewById(R.id.listview_movies);
         adapter = new CustomListAdapter(this.getActivity(), movieList);
-       adapter.notifyDataSetChanged();
+       //adapter.notifyDataSetChanged();
         listView.setAdapter(adapter);
+        listView.requestLayout();
 
 
        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -83,36 +84,20 @@ public class MovieFragment extends Fragment {
            @Override
            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                Movie movie = (Movie) adapter.getItem(position);
-               DBHelper dbHelper = new DBHelper(getContext());
-               Cursor res = dbHelper.getMovieByInfo(movie);
-               System.out.println(res);
-               Movie film = new Movie();
-               res.moveToFirst();
-               film.setTitle(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE)));
-               film.setRelease_date(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE)));
-               film.setOverview(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_OVERVIEW)));
-               film.setVote_average(res.getDouble(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE)));
-               film.setPoster(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_PATH)));
-               film.setUser_rating(res.getDouble(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_USER_RATING)));
-               film.setId(res.getInt(res.getColumnIndex(MovieContract.MovieEntry._ID)));
-               System.out.println(film.getTitle());
-               /*String movieInfo = movie.getTitle() + "\n\n" + movie.getRelease_date() + "\n\n" +
-                       movie.getOverview() + "\n\n" + movie.getVote_average();
-               System.out.println(movieInfo);*/
-
 
                Intent intent = new Intent(getActivity(), DetailActivity.class)
-                       .putExtra("Movie", film);
+                       .putExtra("Movie", movie);
+               /*Intent intent = new Intent(getActivity(), TrailerActivity.class); */
                startActivity(intent);
            }
        });
         return rootView;
     }
-
+/*
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.moviefragment, menu);
-    }
+    }*/
 
     @Override
     public void onStart() {
@@ -168,11 +153,10 @@ public class MovieFragment extends Fragment {
                                 overview = film.getString("overview");
                                 release_date = film.getString("release_date");
                                 vote_average = film.getDouble("vote_average");
-                                if(film.getString("poster_path") != null) {
+                                if(!film.getString("poster_path").equals("null")) {
                                     poster = "http://image.tmdb.org/t/p/" + "w185/" + film.getString("poster_path");
                                     thumbnail = "http://image.tmdb.org/t/p/" + "w45/" + film.getString("poster_path");
-                                }
-
+                                } else { System.out.println("null poster!"); }
 
                                 Movie movie = new Movie();
                                 movie.setTitle(title);
@@ -181,20 +165,25 @@ public class MovieFragment extends Fragment {
                                 movie.setOverview(overview);
                                 movie.setPoster(poster);
                                 movie.setThumbnail(thumbnail);
-                                //System.out.println("movies[" + (i + ((page - 1) * MOVIES_PER_PAGE)) + "] = " + movie.getTitle());
-                                movieList.add(movie);
-                                DBHelper dbHelper = new DBHelper(getContext());
+
+                                DBHelper dbHelper = new DBHelper(getActivity());  // not context
                                 if(!dbHelper.doesMovieExist(movie)) {
                                     dbHelper.addMovie(movie);
                                 }
+
+                                Cursor res = dbHelper.getMovieByInfo(movie);
+                                res.moveToFirst();
+
+                                movie.setFavorite(res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE)));
+                                movie.setId(res.getInt(res.getColumnIndex(MovieContract.MovieEntry._ID)));
+
+                                movieList.add(movie);
                             } catch (JSONException e) {
                                 Log.e(LOG_TAG, "Error: " + e.getMessage());
                             }
 
                         }
-                       /* for (int i = 0 + (20*(page-1)); i < (MOVIES_PER_PAGE + (MOVIES_PER_PAGE *(page-1))) && i < movieArray.length() + (MOVIES_PER_PAGE *(page-1)); i++) {
-                            movieAdapter.add(movies[i].getTitle());
-                        }*/
+
 
                         adapter.notifyDataSetChanged();
 
@@ -213,11 +202,6 @@ public class MovieFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        /*
-        if (id == R.id.action_refresh) {
-            updateMovies();
-            return true;
-        }*/
 
         return super.onOptionsItemSelected(item);
     }

@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public class Movie implements Serializable{
 
-    public Movie(){ user_rating = 0.0; }
+    public Movie(){ favorite = 0; }
 
     private int id;
     private String title;
@@ -16,7 +16,7 @@ public class Movie implements Serializable{
     private String overview;
     private double vote_average;
     private String release_date;
-    private double user_rating;
+    private int favorite;
 
     public void setId(int id) { this.id = id; }
     public int getId() { return id; }
@@ -52,6 +52,6 @@ public class Movie implements Serializable{
     }
     public void setThumbnail(String thumbnail) { this.thumbnail = thumbnail; }
     public String getThumbnail() { return thumbnail; }
-    public void setUser_rating(double user_rating) { this.user_rating = user_rating; }
-    public double getUser_rating() { return user_rating; }
+    public void setFavorite(int favorite) { this.favorite = favorite; }
+    public int getFavorite() { return favorite; }
 }

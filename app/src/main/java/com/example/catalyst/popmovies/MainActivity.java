@@ -16,7 +16,7 @@ import android.view.MenuItem;
 
 import com.example.catalyst.popmovies.data.MovieContract;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Thread.UncaughtExceptionHandler {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +28,19 @@ public class MainActivity extends AppCompatActivity {
                     .add(R.id.container, new MovieFragment())
                     .commit();
         }*/
+        Thread.setDefaultUncaughtExceptionHandler(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         SQLiteDatabase movieDatabase = openOrCreateDatabase(MovieContract.DATABASE_NAME,MODE_PRIVATE, null);
 
+    }
+
+    @Override
+    public void uncaughtException(Thread arg0, Throwable arg1) {
+        System.out.println("uncaught exception caught!");
+        System.out.println(arg0);
+        System.out.println(arg1);
     }
 
     @Override
@@ -57,15 +65,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
-
-
-      /*  if (id == R.id.action_search) {
-            Intent intent = new Intent(this, SearchActivity.class);
-                 //   .putExtra("Movies", film);
-            startActivity(intent);
-            return true;
-        }*/
-
 
         return super.onOptionsItemSelected(item);
     }

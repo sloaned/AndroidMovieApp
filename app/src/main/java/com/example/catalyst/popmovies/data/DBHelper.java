@@ -23,7 +23,7 @@ public class DBHelper extends SQLiteOpenHelper {
             MovieContract.MovieEntry.COLUMN_RELEASE_DATE + " REAL NOT NULL, " +
             MovieContract.MovieEntry.COLUMN_POSTER_PATH + " REAL NOT NULL, " +
             MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE + " REAL NOT NULL, " +
-            MovieContract.MovieEntry.COLUMN_USER_RATING + " NUMERIC NOT NULL)";
+            MovieContract.MovieEntry.COLUMN_FAVORITE + " INTEGER)"; // NOT NULL
 
     public DBHelper(Context context) {
         super(context, MovieContract.DATABASE_NAME, null, 1);
@@ -49,7 +49,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, movie.getRelease_date());
         contentValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, movie.getVote_average());
         contentValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, movie.getPoster());
-        contentValues.put(MovieContract.MovieEntry.COLUMN_USER_RATING, movie.getUser_rating());
+        //contentValues.put(MovieContract.MovieEntry.COLUMN_FAVORITE, movie.getFavorite());
         db.insert(MovieContract.MovieEntry.TABLE_NAME, null, contentValues);
         db.close();
         return true;
@@ -65,7 +65,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public Cursor getMovieByInfo(Movie movie) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + MovieContract.MovieEntry.TABLE_NAME + " WHERE " + MovieContract.MovieEntry.COLUMN_TITLE + " = \"" + movie.getTitle() + "\" AND " + MovieContract.MovieEntry.COLUMN_RELEASE_DATE + " = \"" + movie.getRelease_date() + "\"", null);
-        //db.close();
+        db.close();
         return res;
     }
 
@@ -84,7 +84,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, movie.getRelease_date());
         contentValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, movie.getVote_average());
         contentValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, movie.getPoster());
-        contentValues.put(MovieContract.MovieEntry.COLUMN_USER_RATING, movie.getUser_rating());
+        //contentValues.put(MovieContract.MovieEntry.COLUMN_FAVORITE, movie.getFavorite());
         db.update(MovieContract.MovieEntry.TABLE_NAME, contentValues, MovieContract.MovieEntry._ID + " = ? ", new String[] { Integer.toString(id) } );
         db.close();
         return true;
@@ -109,7 +109,7 @@ public class DBHelper extends SQLiteOpenHelper {
             movie.setVote_average(res.getDouble(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE)));
             movie.setPoster(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_PATH)));
             movie.setRelease_date(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE)));
-            movie.setUser_rating(res.getDouble(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_USER_RATING)));
+            //movie.setFavorite(res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE)));
             movieList.add(movie);
             res.moveToNext();
         }
@@ -129,7 +129,7 @@ public class DBHelper extends SQLiteOpenHelper {
             film.setVote_average(res.getDouble(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE)));
             film.setPoster(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_PATH)));
             film.setRelease_date(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE)));
-            film.setUser_rating(res.getDouble(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_USER_RATING)));
+            //film.setFavorite(res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE)));
             movieList.add(film);
             res.moveToNext();
         }
