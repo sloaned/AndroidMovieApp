@@ -23,7 +23,13 @@ public class DetailActivityFragment extends Fragment {
 
     private Movie movie;
 
-    public DetailActivityFragment() {
+    public DetailActivityFragment() {}
+
+
+    @Override
+    public void onCreate(Bundle savedInstance) {
+        super.onCreate(savedInstance);
+
         setHasOptionsMenu(true);
     }
 

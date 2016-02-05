@@ -6,16 +6,14 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.catalyst.popmovies.DetailActivity.DetailActivityFragment"
-    tools:showIn="@layout/activity_detail">
+    tools:context="com.example.catalyst.popmovies.DetailActivityFragment" >
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="6dp"
-        android:layout_marginTop="43dp">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="43dp" >
 
         <uk.co.deanwild.flowtextview.FlowTextView
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/detail_text">
 

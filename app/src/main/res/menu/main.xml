@@ -2,7 +2,7 @@
     xmlns:appcompat="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/tools"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.catalyst.popmovies.MainActivity">
+    tools:context="com.example.catalyst.popmovies.MovieFragment">
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"

@@ -48,18 +48,15 @@ import java.util.prefs.PreferenceChangeEvent;
 
 public class MovieFragment extends Fragment {
 
-    private ArrayAdapter<String> movieAdapter;
     private CustomListAdapter adapter;
     private ListView listView;
     private final String LOG_TAG = MovieFragment.class.getSimpleName();
     private final int MOVIES_PER_PAGE = 20;
     private final int NUM_MOVIES = 100;
     private int numPages;
-    //private Movie[] movies = new Movie[NUM_MOVIES];
     private List<Movie> movieList = new ArrayList<Movie>();
 
-    public MovieFragment() {
-    }
+    public MovieFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstance) {
@@ -77,7 +74,7 @@ public class MovieFragment extends Fragment {
         //movieAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_pop_movies, R.id.list_pop_movies_posterview, new ArrayList<String>()); // new ArrayList<String>()
         listView = (ListView) rootView.findViewById(R.id.listview_movies);
         adapter = new CustomListAdapter(this.getActivity(), movieList);
-        adapter.notifyDataSetChanged();
+       adapter.notifyDataSetChanged();
         listView.setAdapter(adapter);
 
 

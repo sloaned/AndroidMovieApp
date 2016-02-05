@@ -47,7 +47,7 @@ public class SearchFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // setHasOptionsMenu(true);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class SearchFragment extends Fragment {
 
         listView = (ListView) rootView.findViewById(R.id.listview_search_movies);
         adapter = new CustomListAdapter(this.getActivity(), movies);
-        adapter.notifyDataSetChanged();
+        //adapter.notifyDataSetChanged();
         listView.setAdapter(adapter);
 
         System.out.println("in the search fragment");
@@ -66,6 +66,7 @@ public class SearchFragment extends Fragment {
         System.out.println(intent);
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
+            query = query.replace(" ", "%20");
             System.out.println("query = " + query);
             searchMovies(query);
         }

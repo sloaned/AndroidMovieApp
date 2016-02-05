@@ -28,9 +28,9 @@ public class MainActivity extends AppCompatActivity {
                     .add(R.id.container, new MovieFragment())
                     .commit();
         }*/
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         SQLiteDatabase movieDatabase = openOrCreateDatabase(MovieContract.DATABASE_NAME,MODE_PRIVATE, null);
 
     }
