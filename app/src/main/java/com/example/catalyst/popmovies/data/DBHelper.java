@@ -42,7 +42,6 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public boolean addMovie(Movie movie) {
-        System.out.println("in addMovie");
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(MovieContract.MovieEntry.COLUMN_TITLE, movie.getTitle());
@@ -59,7 +58,6 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getMovieById(int id) {
-        System.out.println("in getMovieById");
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + MovieContract.MovieEntry.TABLE_NAME + " WHERE id=" +id+"", null );
         //db.close();
@@ -67,7 +65,6 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getMovieByInfo(Movie movie) {
-        System.out.println("in getMovieByInfo");
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + MovieContract.MovieEntry.TABLE_NAME + " WHERE " + MovieContract.MovieEntry.COLUMN_TITLE + " = \"" + movie.getTitle() + "\" AND " + MovieContract.MovieEntry.COLUMN_RELEASE_DATE + " = \"" + movie.getRelease_date() + "\"", null);
         //db.close();
@@ -124,7 +121,6 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public boolean doesMovieExist(Movie movie) {
-        System.out.println("in doesMovieExist");
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + MovieContract.MovieEntry.TABLE_NAME + " WHERE " + MovieContract.MovieEntry.COLUMN_TITLE + " = \"" + movie.getTitle() + "\" AND " + MovieContract.MovieEntry.COLUMN_RELEASE_DATE + " = \"" + movie.getRelease_date() + "\"", null);
         ArrayList<Movie> movieList = new ArrayList<Movie>();

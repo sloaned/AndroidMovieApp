@@ -9,6 +9,8 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 
@@ -31,6 +33,21 @@ public class DetailActivityFragment extends Fragment {
         super.onCreate(savedInstance);
 
         setHasOptionsMenu(true);
+    }
+
+    public void onToggleStar(ImageButton btn) {
+
+        if (movie.getFavorite() == 0) {
+            movie.setFavorite(1);
+            btn.setImageResource(R.drawable.button_pressed);
+        } else {
+            movie.setFavorite(0);
+            btn.setImageResource(R.drawable.button_normal);
+        }
+
+        DBHelper dbHelper = new DBHelper(this.getActivity());
+        dbHelper.updateMovie(movie.getId(), movie);
+        dbHelper.close();
     }
 
     @Override
@@ -70,6 +87,19 @@ public class DetailActivityFragment extends Fragment {
                     System.out.println("new rating = " + doubleRating);
                 }
             }); */
+
+            final ImageButton btn = (ImageButton) rootView.findViewById(R.id.favorite);
+            if (movie.getFavorite() == 1) {
+                btn.setImageResource(R.drawable.button_pressed);
+            } else {
+                btn.setImageResource(R.drawable.button_normal);
+            }
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onToggleStar(btn);
+                }
+            });
         }
         return rootView;
     }
