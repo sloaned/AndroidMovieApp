@@ -1,6 +1,7 @@
 package com.example.catalyst.popmovies;
 
 import android.app.ProgressDialog;
+import android.app.SearchManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -78,46 +79,44 @@ public class MovieFragment extends Fragment {
         listView.setAdapter(adapter);
 
 
+
        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
            @Override
            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                Movie movie = (Movie) adapter.getItem(position);
-               DBHelper dbHelper = new DBHelper(getContext());
-               Cursor res = dbHelper.getMovieByInfo(movie);
-               System.out.println(res);
-               Movie film = new Movie();
-               res.moveToFirst();
-               film.setTitle(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE)));
-               film.setRelease_date(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE)));
-               film.setOverview(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_OVERVIEW)));
-               film.setVote_average(res.getDouble(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE)));
-               film.setPoster(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_PATH)));
-               film.setFavorite(res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE)));
-               film.setId(res.getInt(res.getColumnIndex(MovieContract.MovieEntry._ID)));
-               System.out.println(film.getTitle());
-               /*String movieInfo = movie.getTitle() + "\n\n" + movie.getRelease_date() + "\n\n" +
-                       movie.getOverview() + "\n\n" + movie.getVote_average();
-               System.out.println(movieInfo);*/
-
 
                Intent intent = new Intent(getActivity(), DetailActivity.class)
-                       .putExtra("Movie", film);
+                       .putExtra("Movie", movie);
                startActivity(intent);
            }
        });
         return rootView;
     }
 
-    @Override
+   /* @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.moviefragment, menu);
-    }
+    } */
 
     @Override
     public void onStart() {
         super.onStart();
-        updateMovies();
+        Intent intent = getActivity().getIntent();
+        System.out.println(intent);
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            movieList.clear();
+            adapter.notifyDataSetChanged();
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            query = query.replace(" ", "%20");
+            System.out.println("query = " + query);
+            searchMovies(query);
+        } else {
+            movieList.clear();
+            adapter.notifyDataSetChanged();
+            updateMovies();
+        }
+
     }
 
     private void updateMovies() {
@@ -127,6 +126,90 @@ public class MovieFragment extends Fragment {
             getMovieData(i);
         }*/
     }
+
+    protected void searchMovies(String query) {
+        ArrayList<Movie> searchResults = new ArrayList<Movie>();
+        UriBuilder uriBuilder = new UriBuilder();
+        String url = uriBuilder.getSearchUrl(query);
+        String tag_json_obj = "json_obj_req";
+        final String TMDB_RESULTS = "results";
+
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(LOG_TAG, response.toString());
+
+                        JSONArray movieArray = new JSONArray();
+
+                        try{
+                            movieArray = response.getJSONArray(TMDB_RESULTS);
+                        } catch(JSONException e) {
+                            Log.e(LOG_TAG, "Error: " + e.getMessage());
+                        }
+                        for(int i = 0; i < movieArray.length(); i++) {
+                            String title;
+                            String overview;
+                            String release_date;
+                            double vote_average;
+                            String poster = null;
+                            String thumbnail = null;
+                            JSONObject film = new JSONObject();
+                            try {
+                                film = movieArray.getJSONObject(i);
+                                title = film.getString("title");
+                                overview = film.getString("overview");
+                                release_date = film.getString("release_date");
+                                vote_average = film.getDouble("vote_average");
+
+                                if(!film.getString("poster_path").equals("null")) {
+                                    poster = "http://image.tmdb.org/t/p/" + "w185/" + film.getString("poster_path");
+                                    thumbnail = "http://image.tmdb.org/t/p/" + "w45/" + film.getString("poster_path");
+                                }
+
+                                Movie movie = new Movie();
+                                movie.setTitle(title);
+                                movie.setRelease_date(release_date);
+                                movie.setVote_average(vote_average);
+                                movie.setOverview(overview);
+                                movie.setPoster(poster);
+                                movie.setThumbnail(thumbnail);
+
+                                DBHelper dbHelper = new DBHelper(getActivity());  // not context
+                                if(!dbHelper.doesMovieExist(movie)) {
+                                    dbHelper.addMovie(movie);
+                                } else {
+                                    System.out.println("already in db: " + movie.getTitle());
+                                }
+                                Cursor res = dbHelper.getMovieByInfo(movie);
+
+                                res.moveToFirst();
+
+                                movie.setFavorite(res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE)));
+                                movie.setId(res.getInt(res.getColumnIndex(MovieContract.MovieEntry._ID)));
+                                res.close();
+                                dbHelper.close();
+                                movieList.add(movie);
+                            }catch (JSONException e) {
+                                Log.e(LOG_TAG, "Error: " + e.getMessage());
+                            }
+
+                            adapter.notifyDataSetChanged();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(LOG_TAG, "Error: " + error.getMessage());
+
+            }
+        });
+
+        AppController.getInstance().addToRequestQueue(req, tag_json_obj);
+
+    }
+
 
     public void getMovieData(int queryPage) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -168,7 +251,7 @@ public class MovieFragment extends Fragment {
                                 overview = film.getString("overview");
                                 release_date = film.getString("release_date");
                                 vote_average = film.getDouble("vote_average");
-                                if(film.getString("poster_path") != null) {
+                                if(!film.getString("poster_path").equals("null")) {
                                     poster = "http://image.tmdb.org/t/p/" + "w185/" + film.getString("poster_path");
                                     thumbnail = "http://image.tmdb.org/t/p/" + "w45/" + film.getString("poster_path");
                                 }
@@ -185,13 +268,16 @@ public class MovieFragment extends Fragment {
                                 DBHelper dbHelper = new DBHelper(getContext());
                                 if(!dbHelper.doesMovieExist(movie)) {
                                     dbHelper.addMovie(movie);
+                                } else {
+                                    System.out.println("already in db: " + movie.getTitle());
                                 }
                                 Cursor res = dbHelper.getMovieByInfo(movie);
                                 res.moveToFirst();
 
                                 movie.setFavorite(res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE)));
                                 movie.setId(res.getInt(res.getColumnIndex(MovieContract.MovieEntry._ID)));
-
+                                res.close();
+                                dbHelper.close();
                                 movieList.add(movie);
 
                             } catch (JSONException e) {

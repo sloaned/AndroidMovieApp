@@ -39,14 +39,14 @@ public class SearchActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+        setContentView(R.layout.activity_search); // activity_search
 
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.search_container, new SearchFragment())
+                    .add(R.id.search_container, new MovieFragment())
                     .commit();
-        }
+        }  /* SearchFragment, search_container */
     }
 
     @Override
@@ -60,6 +60,16 @@ public class SearchActivity extends AppCompatActivity {
         searchView.setIconifiedByDefault(false);
         return true;
     }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+       /* super.onNewIntent(intent);
+        setIntent(intent);
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.search_container, new SearchFragment())
+                .commit();  */
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -21,7 +21,7 @@ public class DBHelper extends SQLiteOpenHelper {
             MovieContract.MovieEntry.COLUMN_TITLE + " REAL NOT NULL, " +
             MovieContract.MovieEntry.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
             MovieContract.MovieEntry.COLUMN_RELEASE_DATE + " REAL NOT NULL, " +
-            MovieContract.MovieEntry.COLUMN_POSTER_PATH + " REAL NOT NULL, " +
+            MovieContract.MovieEntry.COLUMN_POSTER_PATH + " REAL, " +
             MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE + " REAL NOT NULL, " +
             MovieContract.MovieEntry.COLUMN_FAVORITE + " NUMERIC NOT NULL)";
 
@@ -42,13 +42,16 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public boolean addMovie(Movie movie) {
+        System.out.println("in addMovie");
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(MovieContract.MovieEntry.COLUMN_TITLE, movie.getTitle());
         contentValues.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, movie.getOverview());
         contentValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, movie.getRelease_date());
         contentValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, movie.getVote_average());
+
         contentValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, movie.getPoster());
+
         contentValues.put(MovieContract.MovieEntry.COLUMN_FAVORITE, movie.getFavorite());
         db.insert(MovieContract.MovieEntry.TABLE_NAME, null, contentValues);
         db.close();
@@ -56,6 +59,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getMovieById(int id) {
+        System.out.println("in getMovieById");
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + MovieContract.MovieEntry.TABLE_NAME + " WHERE id=" +id+"", null );
         //db.close();
@@ -63,6 +67,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getMovieByInfo(Movie movie) {
+        System.out.println("in getMovieByInfo");
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + MovieContract.MovieEntry.TABLE_NAME + " WHERE " + MovieContract.MovieEntry.COLUMN_TITLE + " = \"" + movie.getTitle() + "\" AND " + MovieContract.MovieEntry.COLUMN_RELEASE_DATE + " = \"" + movie.getRelease_date() + "\"", null);
         //db.close();
@@ -113,11 +118,13 @@ public class DBHelper extends SQLiteOpenHelper {
             movieList.add(movie);
             res.moveToNext();
         }
+        res.close();
         db.close();
         return movieList;
     }
 
     public boolean doesMovieExist(Movie movie) {
+        System.out.println("in doesMovieExist");
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + MovieContract.MovieEntry.TABLE_NAME + " WHERE " + MovieContract.MovieEntry.COLUMN_TITLE + " = \"" + movie.getTitle() + "\" AND " + MovieContract.MovieEntry.COLUMN_RELEASE_DATE + " = \"" + movie.getRelease_date() + "\"", null);
         ArrayList<Movie> movieList = new ArrayList<Movie>();
@@ -133,8 +140,10 @@ public class DBHelper extends SQLiteOpenHelper {
             movieList.add(film);
             res.moveToNext();
         }
+        res.close();
         db.close();
         if(movieList.size() > 0) {
+            //System.out.println("here's the movie found: " + movieList.get(0).getTitle());
             return true;
         }
         return false;

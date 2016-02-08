@@ -76,26 +76,8 @@ public class SearchFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Movie movie = (Movie) adapter.getItem(position);
-                DBHelper dbHelper = new DBHelper(getContext());
-                Cursor res = dbHelper.getMovieByInfo(movie);
-                System.out.println(res);
-                Movie film = new Movie();
-                res.moveToFirst();
-                film.setTitle(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE)));
-                film.setRelease_date(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE)));
-                film.setOverview(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_OVERVIEW)));
-                film.setVote_average(res.getDouble(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE)));
-                film.setPoster(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_PATH)));
-                film.setFavorite(res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE)));
-                film.setId(res.getInt(res.getColumnIndex(MovieContract.MovieEntry._ID)));
-                System.out.println(film.getTitle());
-               /*String movieInfo = movie.getTitle() + "\n\n" + movie.getRelease_date() + "\n\n" +
-                       movie.getOverview() + "\n\n" + movie.getVote_average();
-               System.out.println(movieInfo);*/
-
-
                 Intent intent = new Intent(getActivity(), DetailActivity.class)
-                        .putExtra("Movie", film);
+                        .putExtra("Movie", movie);
                 startActivity(intent);
             }
         });
@@ -113,8 +95,7 @@ public class SearchFragment extends Fragment {
         String url = uriBuilder.getSearchUrl(query);
         String tag_json_obj = "json_obj_req";
         final String TMDB_RESULTS = "results";
-        System.out.println("now in searchMovies");
-        System.out.println("url = " + url);
+
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -148,9 +129,6 @@ public class SearchFragment extends Fragment {
                                     thumbnail = "http://image.tmdb.org/t/p/" + "w45/" + film.getString("poster_path");
                                 }
 
-
-                                System.out.println(title);
-
                                 Movie movie = new Movie();
                                 movie.setTitle(title);
                                 movie.setRelease_date(release_date);
@@ -162,6 +140,8 @@ public class SearchFragment extends Fragment {
                                 DBHelper dbHelper = new DBHelper(getActivity());  // not context
                                 if(!dbHelper.doesMovieExist(movie)) {
                                     dbHelper.addMovie(movie);
+                                } else {
+                                    System.out.println("already in db: " + movie.getTitle());
                                 }
                                 Cursor res = dbHelper.getMovieByInfo(movie);
 
