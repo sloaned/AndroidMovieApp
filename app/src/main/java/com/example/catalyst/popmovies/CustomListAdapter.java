@@ -84,12 +84,16 @@ public class CustomListAdapter extends BaseAdapter {
         TextView rating = (TextView) convertView.findViewById(R.id.movie_rating);
         TextView year = (TextView) convertView.findViewById(R.id.movie_year);
         RatingBar ratingBar = (RatingBar) convertView.findViewById(R.id.movie_rating_bar);
+        ImageView favorite = (ImageView) convertView.findViewById(R.id.favorite_star);
         Movie m = movieItems.get(position);
 
         if(m.getThumbnail() != null) {
             NetworkImageView thumbnail = (NetworkImageView) convertView
                     .findViewById(R.id.poster_icon);
             thumbnail.setImageUrl(m.getThumbnail(), imageLoader);
+        }
+        if (m.getFavorite() == 1) {
+            favorite.setImageResource(R.drawable.button_pressed);
         }
 
 

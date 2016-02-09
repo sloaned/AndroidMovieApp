@@ -17,6 +17,10 @@ import android.widget.RatingBar;
 import com.example.catalyst.popmovies.data.DBHelper;
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import uk.co.deanwild.flowtextview.FlowTextView;
 
 public class DetailActivityFragment extends Fragment {
@@ -39,6 +43,16 @@ public class DetailActivityFragment extends Fragment {
 
         if (movie.getFavorite() == 0) {
             movie.setFavorite(1);
+            Date date = new Date();
+            //String dateString = date.toString();
+            String dateString;
+            SimpleDateFormat dt = new SimpleDateFormat("MM/dd/yyyy");
+
+            dateString = dt.format(date);
+
+
+            movie.setFavorite_date(dateString);
+            System.out.println(movie.getFavorite_date());
             btn.setImageResource(R.drawable.button_pressed);
         } else {
             movie.setFavorite(0);

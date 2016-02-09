@@ -16,11 +16,10 @@
     <string name="pref_sort_label_unpopular">Least Popular</string>
     <string name="pref_sort_low_rating">lowrating</string>
     <string name="pref_sort_label_low_rating">Lowest Rated</string>
+    <string name="pref_sort_favorites">favorites</string>
+    <string name="pref_sort_label_favorites">Favorites</string>
     <string name="title_activity_search">SearchActivity</string>
     <string name="search_hint">Search for a movie</string>
     <string name="action_search">Search</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

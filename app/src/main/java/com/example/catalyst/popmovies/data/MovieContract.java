@@ -42,6 +42,8 @@ public class MovieContract {
 
         public static final String COLUMN_FAVORITE = "favorite";
 
+        public static final String COLUMN_FAVORITE_DATE = "favorite_date";
+
     }
 
 

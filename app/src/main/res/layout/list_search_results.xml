@@ -28,6 +28,13 @@
         android:layout_toRightOf="@+id/poster_icon"
         android:textSize="@dimen/rating" />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/favorite_star"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"/>
+
     <RatingBar
         android:id="@+id/movie_rating_bar"
         android:layout_width="wrap_content"

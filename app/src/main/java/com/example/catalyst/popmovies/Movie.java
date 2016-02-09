@@ -1,6 +1,7 @@
 package com.example.catalyst.popmovies;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by dsloane on 1/26/2016.
@@ -17,6 +18,7 @@ public class Movie implements Serializable{
     private double vote_average;
     private String release_date;
     private int favorite;
+    private String favorite_date;
 
     public void setId(int id) { this.id = id; }
     public int getId() { return id; }
@@ -54,4 +56,6 @@ public class Movie implements Serializable{
     public String getThumbnail() { return thumbnail; }
     public void setFavorite(int favorite) { this.favorite = favorite; }
     public double getFavorite() { return favorite; }
+    public void setFavorite_date(String favorite_date) { this.favorite_date = favorite_date; }
+    public String getFavorite_date() { return favorite_date; }
 }
