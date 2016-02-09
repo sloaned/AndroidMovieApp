@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        deleteDatabase(MovieContract.DATABASE_NAME);
+        //deleteDatabase(MovieContract.DATABASE_NAME);
         SQLiteDatabase movieDatabase = openOrCreateDatabase(MovieContract.DATABASE_NAME,MODE_PRIVATE, null);
 
     }
@@ -71,9 +71,4 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-   /* @Override
-    public boolean onQueryTextChange(String newText) {
-        startActivity(new Intent(this, SearchActivity.class));
-        return true;
-    }*/
 }

@@ -22,6 +22,7 @@ public class UriBuilder {
         else if (sortOrder.equals("lowrating")) {
             url += "discover/movie?vote_count.gte=300&sort_by=vote_average.asc";
         }
+
         if (page > 1) {
             url += "&page=" + page;
         }

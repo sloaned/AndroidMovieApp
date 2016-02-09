@@ -48,11 +48,11 @@ public class DetailActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu); //menu_detail
 
-        /*SearchManager searchManager = (SearchManager) getSystemService (Context.SEARCH_SERVICE);
+        SearchManager searchManager = (SearchManager) getSystemService (Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(false); */
+        searchView.setIconifiedByDefault(false);
         return true;
     }
 

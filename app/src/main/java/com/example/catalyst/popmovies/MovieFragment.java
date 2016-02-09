@@ -114,7 +114,14 @@ public class MovieFragment extends Fragment {
         } else {
             movieList.clear();
             adapter.notifyDataSetChanged();
-            updateMovies();
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String sortOrder = prefs.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_default));
+            if (!sortOrder.equals("favorites")) {
+                updateMovies();
+            } else {
+                showFavorites();
+            }
+
         }
 
     }
@@ -125,6 +132,30 @@ public class MovieFragment extends Fragment {
         /*for (int i = 2; i <= 5 && i <= numPages; i++) {
             getMovieData(i);
         }*/
+    }
+
+    protected void showFavorites() {
+        adapter.clear();
+        DBHelper dbHelper = new DBHelper(getActivity());
+        Cursor res = dbHelper.getFavoriteMovies();
+        if (res.moveToFirst()) {
+            while (!res.isAfterLast()) {
+                Movie movie = new Movie();
+                movie.setTitle(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE)));
+                movie.setPoster(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_PATH)));
+                movie.setThumbnail(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_THUMBNAIL)));
+                movie.setOverview(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_OVERVIEW)));
+                movie.setVote_average(res.getDouble(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE)));
+                movie.setId(res.getInt(res.getColumnIndex(MovieContract.MovieEntry._ID)));
+                movie.setRelease_date(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE)));
+                movie.setFavorite(1);
+                movie.setFavorite_date(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE_DATE)));
+                movieList.add(movie);
+                res.moveToNext();
+            }
+            adapter.notifyDataSetChanged();
+            res.close();
+        }
     }
 
     protected void searchMovies(String query) {

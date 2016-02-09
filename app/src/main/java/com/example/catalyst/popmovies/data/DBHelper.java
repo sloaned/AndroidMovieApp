@@ -22,6 +22,7 @@ public class DBHelper extends SQLiteOpenHelper {
             MovieContract.MovieEntry.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
             MovieContract.MovieEntry.COLUMN_RELEASE_DATE + " REAL NOT NULL, " +
             MovieContract.MovieEntry.COLUMN_POSTER_PATH + " REAL, " +
+            MovieContract.MovieEntry.COLUMN_THUMBNAIL + " REAL, " +
             MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE + " REAL NOT NULL, " +
             MovieContract.MovieEntry.COLUMN_FAVORITE + " NUMERIC NOT NULL, " +
             MovieContract.MovieEntry.COLUMN_FAVORITE_DATE + " TEXT)";
@@ -51,6 +52,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, movie.getVote_average());
 
         contentValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, movie.getPoster());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_THUMBNAIL, movie.getThumbnail());
 
         contentValues.put(MovieContract.MovieEntry.COLUMN_FAVORITE, movie.getFavorite());
         if (movie.getFavorite_date() != null) {
@@ -82,14 +84,17 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public boolean updateMovie (Integer id, Movie movie) {
         SQLiteDatabase db = this.getWritableDatabase();
+        System.out.println("updating movie: " + movie.getTitle() + " , id = " + movie.getId());
         ContentValues contentValues = new ContentValues();
         contentValues.put(MovieContract.MovieEntry.COLUMN_TITLE, movie.getTitle());
         contentValues.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, movie.getOverview());
         contentValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, movie.getRelease_date());
         contentValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, movie.getVote_average());
         contentValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, movie.getPoster());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_THUMBNAIL, movie.getThumbnail());
         contentValues.put(MovieContract.MovieEntry.COLUMN_FAVORITE, movie.getFavorite());
-        contentValues.put(MovieContract.MovieEntry.COLUMN_FAVORITE_DATE, movie.getFavorite_date().toString());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_FAVORITE_DATE, movie.getFavorite_date());
+
         db.update(MovieContract.MovieEntry.TABLE_NAME, contentValues, MovieContract.MovieEntry._ID + " = ? ", new String[] { Integer.toString(id) } );
         db.close();
         return true;
@@ -113,6 +118,7 @@ public class DBHelper extends SQLiteOpenHelper {
             movie.setOverview(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_OVERVIEW)));
             movie.setVote_average(res.getDouble(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE)));
             movie.setPoster(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_PATH)));
+            movie.setThumbnail(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_THUMBNAIL)));
             movie.setRelease_date(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE)));
             movie.setFavorite(res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE)));
             movie.setFavorite_date(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE_DATE)));
@@ -122,6 +128,13 @@ public class DBHelper extends SQLiteOpenHelper {
         res.close();
         db.close();
         return movieList;
+    }
+
+    public Cursor getFavoriteMovies() {
+        ArrayList<Movie> movieList = new ArrayList<Movie>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery( "SELECT * FROM " + MovieContract.MovieEntry.TABLE_NAME + " WHERE " + MovieContract.MovieEntry.COLUMN_FAVORITE + " = 1", null);
+        return res;
     }
 
     public boolean doesMovieExist(Movie movie) {
