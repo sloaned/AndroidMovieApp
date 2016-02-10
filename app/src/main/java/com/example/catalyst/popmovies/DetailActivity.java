@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -53,7 +54,7 @@ public class DetailActivity extends AppCompatActivity {
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(false);
+        searchView.setIconifiedByDefault(true);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -87,6 +88,26 @@ public class DetailActivity extends AppCompatActivity {
             //   .putExtra("Movies", film);
             startActivity(intent);
             return true;
+        }
+        if (id == R.id.action_home) {
+
+            System.out.println("Home button clicked");
+            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+            editor.putString(getString(R.string.pref_search_key), (String) null);
+            editor.apply();
+
+            this.setIntent(null);
+            startActivity(new Intent(this, MainActivity.class));
+            return true;
+
+           /* Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
+            if (fragment != null) {
+                getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+            } */
+        /*
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, new MovieFragment())
+                    .commit(); // container */
         }
 
         return super.onOptionsItemSelected(item);

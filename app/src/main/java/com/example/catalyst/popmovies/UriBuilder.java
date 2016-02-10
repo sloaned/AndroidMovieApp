@@ -14,13 +14,13 @@ public class UriBuilder {
             url += "discover/movie?sort_by=popularity.desc";
         }
         else if (sortOrder.equals("rating")) {
-            url += "discover/movie?vote_count.gte=300&sort_by=vote_average.desc";
+            url += "discover/movie?vote_count.gte=100&sort_by=vote_average.desc";
         }
         else if (sortOrder.equals("unpopular")) {
-            url += "discover/movie?vote_count.gte=100&sort_by=popularity.asc";
+            url += "discover/movie?vote_count.gte=80&sort_by=popularity.asc";
         }
         else if (sortOrder.equals("lowrating")) {
-            url += "discover/movie?vote_count.gte=300&sort_by=vote_average.asc";
+            url += "discover/movie?vote_count.gte=100&sort_by=vote_average.asc";
         }
 
         if (page > 1) {

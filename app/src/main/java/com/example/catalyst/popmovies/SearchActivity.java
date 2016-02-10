@@ -60,7 +60,7 @@ public class SearchActivity extends AppCompatActivity {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(false);
+        searchView.setIconifiedByDefault(true);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -106,6 +106,27 @@ public class SearchActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         } // added Tuesday 2:30
+
+        if (id == R.id.action_home) {
+
+            System.out.println("Home button clicked");
+            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+            editor.putString(getString(R.string.pref_search_key), (String) null);
+            editor.apply();
+
+            this.setIntent(null);
+            startActivity(new Intent(this, MainActivity.class));
+
+           /* Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
+            if (fragment != null) {
+                getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+            } */
+
+           /* getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, new MovieFragment())
+                    .commit(); // container */
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }

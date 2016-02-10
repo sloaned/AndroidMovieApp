@@ -106,11 +106,12 @@ public class MovieFragment extends Fragment {
     public void onStart() {
         super.onStart();
         Intent intent = getActivity().getIntent();
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+        if (intent != null && Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             System.out.println("query made for: " + query);
             SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
             editor.putString(getString(R.string.pref_search_key), query);
+            editor.putString(getString(R.string.pref_saved_search), query);
             editor.apply();
         }
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -119,7 +120,7 @@ public class MovieFragment extends Fragment {
         if (storedSearch != null) {
             intent.setAction(Intent.ACTION_SEARCH).putExtra(SearchManager.QUERY, storedSearch);
         }
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+        if (intent != null && Intent.ACTION_SEARCH.equals(intent.getAction())) {
             movieList.clear();
             adapter.notifyDataSetChanged();
             String query = intent.getStringExtra(SearchManager.QUERY);

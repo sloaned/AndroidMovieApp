@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -40,6 +42,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        String query = prefs.getString(getString(R.string.pref_saved_search), null);
+
+        SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+        editor.putString(getString(R.string.pref_search_key), query);
+        editor.apply();
+        Intent intent = new Intent(this, SearchActivity.class);
+        startActivity(intent);
+
     }
 
     @Override
@@ -54,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(false);
+        searchView.setIconifiedByDefault(true);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -94,6 +105,26 @@ public class MainActivity extends AppCompatActivity {
 
         else if (id == R.id.action_home) {
 
+        }
+
+        if (id == R.id.action_home) {
+
+            System.out.println("Home button clicked");
+            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+            editor.putString(getString(R.string.pref_search_key), (String) null);
+            editor.apply();
+
+            this.setIntent(null);
+            startActivity(new Intent(this, MainActivity.class));
+           /* Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
+            if (fragment != null) {
+                getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+            }
+
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, new MovieFragment())
+                    .commit(); // container */
+            return true;
         }
 
 
