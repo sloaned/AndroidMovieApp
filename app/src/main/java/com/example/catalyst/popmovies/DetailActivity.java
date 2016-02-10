@@ -3,6 +3,7 @@ package com.example.catalyst.popmovies;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
@@ -53,6 +54,24 @@ public class DetailActivity extends AppCompatActivity {
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+                editor.putString(getString(R.string.pref_search_key), query);
+                editor.apply();
+                Intent intent = new Intent(getBaseContext(), SearchActivity.class);
+                intent.setAction(Intent.ACTION_SEARCH).putExtra(SearchManager.QUERY, query);
+                startActivity(intent);
+                return true;
+
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
         return true;
     }
 
@@ -61,6 +80,12 @@ public class DetailActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
+            return true;
+        }
+        if (id == R.id.action_search) {
+            Intent intent = new Intent(this, SearchActivity.class);
+            //   .putExtra("Movies", film);
+            startActivity(intent);
             return true;
         }
 

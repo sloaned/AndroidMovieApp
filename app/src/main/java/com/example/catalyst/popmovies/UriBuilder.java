@@ -27,7 +27,7 @@ public class UriBuilder {
             url += "&page=" + page;
         }
 
-        url += "&api_key=a40aba8d089b515623b55cc305b76b74";
+        url += "&api_key=" + BuildConfig.APIKEY;
         return url;
     }
 
@@ -35,7 +35,7 @@ public class UriBuilder {
         String url = "https://api.themoviedb.org/3/";
         url += "search/movie?query=";
         url += searchTerm;
-        url += "&api_key=a40aba8d089b515623b55cc305b76b74";
+        url += "&api_key=" + BuildConfig.APIKEY;
         return url;
     }
 }

@@ -86,14 +86,12 @@ public class CustomListAdapter extends BaseAdapter {
         RatingBar ratingBar = (RatingBar) convertView.findViewById(R.id.movie_rating_bar);
         ImageView favorite_star = (ImageView) convertView.findViewById(R.id.favorite_star);
         Movie m = movieItems.get(position);
-        System.out.println("position = " + position + " , title = " + m.getTitle());
         if(m.getThumbnail() != null) {
             NetworkImageView thumbnail = (NetworkImageView) convertView
                     .findViewById(R.id.poster_icon);
             thumbnail.setImageUrl(m.getThumbnail(), imageLoader);
         }
         if (m.getFavorite() == 1) {
-            System.out.println("apparently this is a favorite: " + m.getTitle());
             //favorite_star.setImageResource(R.drawable.button_pressed);
             Picasso.with(activity).load(R.drawable.button_pressed).into(favorite_star);
         } else {

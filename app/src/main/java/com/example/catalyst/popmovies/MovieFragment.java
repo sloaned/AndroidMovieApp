@@ -2,6 +2,7 @@ package com.example.catalyst.popmovies;
 
 import android.app.ProgressDialog;
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -9,6 +10,7 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -64,6 +66,7 @@ public class MovieFragment extends Fragment {
         super.onCreate(savedInstance);
 
         setHasOptionsMenu(true);
+
     }
 
     @Override
@@ -103,13 +106,26 @@ public class MovieFragment extends Fragment {
     public void onStart() {
         super.onStart();
         Intent intent = getActivity().getIntent();
-        System.out.println(intent);
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            System.out.println("query made for: " + query);
+            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+            editor.putString(getString(R.string.pref_search_key), query);
+            editor.apply();
+        }
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String storedSearch = preferences.getString(getString(R.string.pref_search_key), null);
+        System.out.println("storedSearch = " + storedSearch);
+        if (storedSearch != null) {
+            intent.setAction(Intent.ACTION_SEARCH).putExtra(SearchManager.QUERY, storedSearch);
+        }
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             movieList.clear();
             adapter.notifyDataSetChanged();
             String query = intent.getStringExtra(SearchManager.QUERY);
+
             query = query.replace(" ", "%20");
-            System.out.println("query = " + query);
+
             searchMovies(query);
         } else {
             movieList.clear();

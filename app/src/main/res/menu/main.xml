@@ -1,13 +1,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:appcompat="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.catalyst.popmovies.MovieFragment">
+    <!-- app: tools, not apk/res-auto -->
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_home"
+        android:title="@string/action_home"
+        appcompat:showAsAction="always"/>
 
     <item
         android:id="@+id/action_search"
