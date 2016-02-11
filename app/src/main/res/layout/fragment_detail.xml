@@ -45,7 +45,6 @@
                 android:layout_width="180dp"
                 android:layout_height="wrap_content"
                 android:paddingRight="10dp"
-                android:paddingBottom="5dp"
                 android:gravity="center_horizontal"
                 android:id="@+id/reviews_link"
                 android:layout_below="@+id/trailer_link"

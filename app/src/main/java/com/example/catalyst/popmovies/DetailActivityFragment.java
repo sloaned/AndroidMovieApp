@@ -18,6 +18,8 @@ import android.widget.TextView;
 import com.example.catalyst.popmovies.data.DBHelper;
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -85,10 +87,10 @@ public class DetailActivityFragment extends Fragment {
             if (movie.getHasTrailer()) {
                 showTrailerLink(rootView);
             }
-            /*
+
             if (movie.getHasReviews()) {
                 showReviewLink(rootView);
-            } */
+            }
 
             FlowTextView flowTextView = (FlowTextView) rootView.findViewById(R.id.detail_text);
             flowTextView.setText(movieInfo);
@@ -112,6 +114,11 @@ public class DetailActivityFragment extends Fragment {
     public void showTrailerLink(View rootView) {
         TextView trailerLink = (TextView) rootView.findViewById(R.id.trailer_link);
         trailerLink.setText("View trailer");
+    }
+
+    public void showReviewLink(View rootView) {
+        TextView reviewLink = (TextView) rootView.findViewById(R.id.reviews_link);
+        reviewLink.setText("Read reviews");
     }
 
 }
