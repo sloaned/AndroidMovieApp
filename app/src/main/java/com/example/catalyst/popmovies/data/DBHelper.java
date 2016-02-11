@@ -24,6 +24,9 @@ public class DBHelper extends SQLiteOpenHelper {
             MovieContract.MovieEntry.COLUMN_POSTER_PATH + " REAL, " +
             MovieContract.MovieEntry.COLUMN_THUMBNAIL + " REAL, " +
             MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE + " REAL NOT NULL, " +
+            MovieContract.MovieEntry.COLUMN_HAS_TRAILER + " NUMERIC NOT NULL, " +
+            MovieContract.MovieEntry.COLUMN_HAS_REVIEWS + " NUMERIC NOT NULL, " +
+            MovieContract.MovieEntry.COLUMN_TMDB_ID + " REAL NOT NULL, " +
             MovieContract.MovieEntry.COLUMN_FAVORITE + " NUMERIC NOT NULL, " +
             MovieContract.MovieEntry.COLUMN_FAVORITE_DATE + " TEXT)";
 
@@ -58,6 +61,20 @@ public class DBHelper extends SQLiteOpenHelper {
         if (movie.getFavorite_date() != null) {
             contentValues.put(MovieContract.MovieEntry.COLUMN_FAVORITE_DATE, movie.getFavorite_date().toString());
         }
+        if (movie.getHasTrailer()) {
+            contentValues.put(MovieContract.MovieEntry.COLUMN_HAS_TRAILER, 1);
+        } else {
+            contentValues.put(MovieContract.MovieEntry.COLUMN_HAS_TRAILER, 0);
+        }
+
+        if (movie.getHasReviews()) {
+            contentValues.put(MovieContract.MovieEntry.COLUMN_HAS_REVIEWS, 1);
+        } else {
+            contentValues.put(MovieContract.MovieEntry.COLUMN_HAS_REVIEWS, 0);
+        }
+
+        contentValues.put(MovieContract.MovieEntry.COLUMN_TMDB_ID, movie.getTmdb_id());
+
         db.insert(MovieContract.MovieEntry.TABLE_NAME, null, contentValues);
         db.close();
         return true;
@@ -69,9 +86,9 @@ public class DBHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public Cursor getMovieByInfo(Movie movie) {
+    public Cursor getMovieByTMDBId(Movie movie) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + MovieContract.MovieEntry.TABLE_NAME + " WHERE " + MovieContract.MovieEntry.COLUMN_TITLE + " = \"" + movie.getTitle() + "\" AND " + MovieContract.MovieEntry.COLUMN_RELEASE_DATE + " = \"" + movie.getRelease_date() + "\"", null);
+        Cursor res = db.rawQuery("SELECT * FROM " + MovieContract.MovieEntry.TABLE_NAME + " WHERE " + MovieContract.MovieEntry.COLUMN_TMDB_ID + " = \"" + movie.getTmdb_id() + "\"", null);
         return res;
     }
 
@@ -94,7 +111,18 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(MovieContract.MovieEntry.COLUMN_THUMBNAIL, movie.getThumbnail());
         contentValues.put(MovieContract.MovieEntry.COLUMN_FAVORITE, movie.getFavorite());
         contentValues.put(MovieContract.MovieEntry.COLUMN_FAVORITE_DATE, movie.getFavorite_date());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_TMDB_ID, movie.getTmdb_id());
+        if (movie.getHasTrailer()) {
+            contentValues.put(MovieContract.MovieEntry.COLUMN_HAS_TRAILER, 1);
+        } else {
+            contentValues.put(MovieContract.MovieEntry.COLUMN_HAS_TRAILER, 0);
+        }
 
+        if (movie.getHasReviews()) {
+            contentValues.put(MovieContract.MovieEntry.COLUMN_HAS_REVIEWS, 1);
+        } else {
+            contentValues.put(MovieContract.MovieEntry.COLUMN_HAS_REVIEWS, 0);
+        }
         db.update(MovieContract.MovieEntry.TABLE_NAME, contentValues, MovieContract.MovieEntry._ID + " = ? ", new String[] { Integer.toString(id) } );
         db.close();
         return true;
@@ -122,6 +150,17 @@ public class DBHelper extends SQLiteOpenHelper {
             movie.setRelease_date(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE)));
             movie.setFavorite(res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE)));
             movie.setFavorite_date(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE_DATE)));
+            if (res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_HAS_TRAILER)) == 1) {
+                movie.setHasTrailer(true);
+            } else {
+                movie.setHasTrailer(false);
+            }
+            if (res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_HAS_REVIEWS)) == 1) {
+                movie.setHasReviews(true);
+            } else {
+                movie.setHasReviews(false);
+            }
+            movie.setTmdb_id(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_TMDB_ID)));
             movieList.add(movie);
             res.moveToNext();
         }

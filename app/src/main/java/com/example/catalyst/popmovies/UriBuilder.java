@@ -46,4 +46,10 @@ public class UriBuilder {
         url += "&append_to_response=releases,trailers,reviews";
         return url;
     }
+
+    public String getTrailerUrl (String trailerString) {
+        String url = "https://www.youtube.com/watch?v=";
+        url += trailerString;
+        return url;
+    }
 }

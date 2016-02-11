@@ -72,8 +72,8 @@ public class DetailActivityFragment extends Fragment {
         if (intent != null && intent.hasExtra("Movie")) {
             movie = (Movie) intent.getSerializableExtra("Movie");
             System.out.println("here's the id number: " + movie.getId());
-            String movieInfo = movie.getTitle() + "\n\nReleased: " + movie.getRelease_date() + "\n\nAverage Rating: " + movie.getVote_average()
-                    + "\n\n" + movie.getOverview();
+            String movieInfo = movie.getTitle().replaceAll("\"\"", "\"") + "\n\nReleased: " + movie.getRelease_date() + "\n\nAverage Rating: " + movie.getVote_average()
+                    + "\n\n" + movie.getOverview().replaceAll("\"\"", "\"");
             ImageView imageView = (ImageView) rootView.findViewById(R.id.movie_poster);
             if (movie.getPoster() != null) {
                 Picasso.with(getContext()).load(movie.getPoster()).into(imageView);
@@ -83,24 +83,6 @@ public class DetailActivityFragment extends Fragment {
 
             FlowTextView flowTextView = (FlowTextView) rootView.findViewById(R.id.detail_text);
             flowTextView.setText(movieInfo);
-           /* RatingBar ratingBar = (RatingBar) rootView.findViewById(R.id.user_rating_bar);
-            Float floatRating = (float) movie.getUser_rating();
-            ratingBar.setRating(floatRating);
-            LayerDrawable drawable = (LayerDrawable) ratingBar.getProgressDrawable();
-
-            DrawableCompat.setTint(DrawableCompat.wrap(drawable.getDrawable(1)), Color.GRAY);
-            DrawableCompat.setTint(DrawableCompat.wrap(drawable.getDrawable(2)), Color.RED);
-            DrawableCompat.setTint(DrawableCompat.wrap(drawable.getDrawable(0)), Color.GRAY);
-            //ratingBar.getOnRatingBarChangeListener();
-            ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-                @Override
-                public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                    double doubleRating = (double) rating;
-                    DBHelper dbHelper = new DBHelper(getContext());
-                    dbHelper.updateMovie(movie.getId(), movie);
-                    System.out.println("new rating = " + doubleRating);
-                }
-            }); */
 
             final ImageButton btn = (ImageButton) rootView.findViewById(R.id.favorite);
             if (movie.getFavorite() == 1) {

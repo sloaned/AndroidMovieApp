@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -206,7 +207,9 @@ public class MovieFragment extends Fragment {
                             try {
                                 film = movieArray.getJSONObject(i);
                                 title = film.getString("title");
+                                title = title.replaceAll("\"", "\"\"");
                                 overview = film.getString("overview");
+                                overview = overview.replaceAll("\"", "\"\"");
                                 release_date = film.getString("release_date");
                                 vote_average = film.getDouble("vote_average");
 
@@ -222,23 +225,27 @@ public class MovieFragment extends Fragment {
                                 movie.setOverview(overview);
                                 movie.setPoster(poster);
                                 movie.setThumbnail(thumbnail);
+                                movie.setTmdb_id(film.getString("id"));
 
-                                DBHelper dbHelper = new DBHelper(getActivity());  // not context
+                                DBHelper dbHelper = new DBHelper(getContext());
                                 if(!dbHelper.doesMovieExist(movie)) {
-                                    dbHelper.addMovie(movie);
+                                    dbHelper.close();
+                                    getSingleMovieData(movie);
                                 } else {
                                     System.out.println("already in db: " + movie.getTitle());
+
+                                    Cursor res = dbHelper.getMovieByTMDBId(movie);
+                                    res.moveToFirst();
+
+                                    movie.setFavorite(res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE)));
+                                    movie.setId(res.getInt(res.getColumnIndex(MovieContract.MovieEntry._ID)));
+                                    res.close();
+                                    dbHelper.close();
+
+                                    movieList.add(movie);
                                 }
-                                Cursor res = dbHelper.getMovieByInfo(movie);
 
-                                res.moveToFirst();
-
-                                movie.setFavorite(res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE)));
-                                movie.setId(res.getInt(res.getColumnIndex(MovieContract.MovieEntry._ID)));
-                                res.close();
-                                dbHelper.close();
-                                movieList.add(movie);
-                            }catch (JSONException e) {
+                            } catch (JSONException e) {
                                 Log.e(LOG_TAG, "Error: " + e.getMessage());
                             }
 
@@ -256,6 +263,66 @@ public class MovieFragment extends Fragment {
 
         AppController.getInstance().addToRequestQueue(req, tag_json_obj);
 
+    }
+
+    public void getSingleMovieData(Movie movie) {
+        UriBuilder uriBuilder = new UriBuilder();
+        String url = uriBuilder.getMovieUrl(movie.getTmdb_id());
+        String tag_json_obj = "json_obj_req";
+        final String MOVIE_TRAILERS = "trailers";
+        final String YOUTUBE_TRAILERS = "youtube";
+        final String YOUTUBE_SOURCE = "source";
+        final String MOVIE_REVIEWS = "reviews";
+        final String REVIEW_RESULTS = "results";
+        final Movie MOVIE_FILM = movie;
+        boolean hasTrailer;
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(LOG_TAG, response.toString());
+                        Movie film = MOVIE_FILM;
+                        try{
+                            JSONObject trailers = response.getJSONObject(MOVIE_TRAILERS);
+                            JSONArray youtubeTrailers = trailers.getJSONArray(YOUTUBE_TRAILERS);
+
+                            if (youtubeTrailers.length() > 0) {
+                                film.setHasTrailer(true);
+                            }
+
+                            JSONObject reviews = response.getJSONObject(MOVIE_REVIEWS);
+                            JSONArray reviewResults = reviews.getJSONArray(REVIEW_RESULTS);
+
+                            if (reviewResults.length() > 0) {
+                                film.setHasReviews(true);
+                            }
+
+                            DBHelper dbHelper = new DBHelper(getContext());
+                            dbHelper.addMovie(film);
+                            Cursor res = dbHelper.getMovieByTMDBId(film);
+                            res.moveToFirst();
+
+                            film.setFavorite(res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE)));
+                            film.setId(res.getInt(res.getColumnIndex(MovieContract.MovieEntry._ID)));
+                            res.close();
+                            System.out.println("adding to database: " + film.getTitle() + ", id = " + film.getId());
+
+                            dbHelper.close();
+                        } catch (JSONException e) {
+                            Log.e(LOG_TAG, "Error: " + e.getMessage());
+                        }
+
+                        movieList.add(film);
+
+                        adapter.notifyDataSetChanged();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(LOG_TAG, "Error: " + error.getMessage());
+            }
+        });
+        AppController.getInstance().addToRequestQueue(req, tag_json_obj);
     }
 
 
@@ -296,7 +363,9 @@ public class MovieFragment extends Fragment {
                             try{
                                 film = movieArray.getJSONObject(i);
                                 title = film.getString("title");
+                                title = title.replaceAll("\"", "\"\"");
                                 overview = film.getString("overview");
+                                overview = overview.replaceAll("\"", "\"\"");
                                 release_date = film.getString("release_date");
                                 vote_average = film.getDouble("vote_average");
                                 if(!film.getString("poster_path").equals("null")) {
@@ -312,21 +381,27 @@ public class MovieFragment extends Fragment {
                                 movie.setOverview(overview);
                                 movie.setPoster(poster);
                                 movie.setThumbnail(thumbnail);
+                                movie.setTmdb_id(film.getString("id"));
 
                                 DBHelper dbHelper = new DBHelper(getContext());
                                 if(!dbHelper.doesMovieExist(movie)) {
-                                    dbHelper.addMovie(movie);
+                                    dbHelper.close();
+                                    getSingleMovieData(movie);
                                 } else {
                                     System.out.println("already in db: " + movie.getTitle());
-                                }
-                                Cursor res = dbHelper.getMovieByInfo(movie);
-                                res.moveToFirst();
 
-                                movie.setFavorite(res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE)));
-                                movie.setId(res.getInt(res.getColumnIndex(MovieContract.MovieEntry._ID)));
-                                res.close();
-                                dbHelper.close();
-                                movieList.add(movie);
+                                    Cursor res = dbHelper.getMovieByTMDBId(movie);
+                                    res.moveToFirst();
+
+                                    movie.setFavorite(res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE)));
+                                    movie.setId(res.getInt(res.getColumnIndex(MovieContract.MovieEntry._ID)));
+                                    res.close();
+                                    dbHelper.close();
+
+                                    movieList.add(movie);
+                                }
+
+
 
                             } catch (JSONException e) {
                                 Log.e(LOG_TAG, "Error: " + e.getMessage());

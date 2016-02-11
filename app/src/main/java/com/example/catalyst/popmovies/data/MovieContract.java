@@ -46,6 +46,12 @@ public class MovieContract {
 
         public static final String COLUMN_FAVORITE_DATE = "favorite_date";
 
+        public static final String COLUMN_HAS_TRAILER = "has_trailer";
+
+        public static final String COLUMN_HAS_REVIEWS = "has_reviews";
+
+        public static final String COLUMN_TMDB_ID = "tmdb_id";
+
     }
 
 

@@ -99,7 +99,7 @@ public class CustomListAdapter extends BaseAdapter {
         }
 
 
-        title.setText(m.getTitle());
+        title.setText(m.getTitle().replaceAll("\"\"", "\""));
         rating.setText("Rating: " + Double.toString(m.getVote_average()));
         String yearString = "";
         if((m.getRelease_date()).length() > 4) {
