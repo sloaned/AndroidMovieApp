@@ -38,4 +38,12 @@ public class UriBuilder {
         url += "&api_key=" + BuildConfig.APIKEY;
         return url;
     }
+
+    public String getMovieUrl (String movieId) {
+        String url = "https://api.themoviedb.org/3/movie/";
+        url += movieId;
+        url += "?api_key=" + BuildConfig.APIKEY;
+        url += "&append_to_response=releases,trailers,reviews";
+        return url;
+    }
 }
