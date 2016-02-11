@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="year">#888888</color>
+    <color name="colorLink">#0000FF</color>
 </resources>

@@ -395,6 +395,12 @@ public class MovieFragment extends Fragment {
 
                                     movie.setFavorite(res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE)));
                                     movie.setId(res.getInt(res.getColumnIndex(MovieContract.MovieEntry._ID)));
+                                    if (res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_HAS_TRAILER)) == 1) {
+                                        movie.setHasTrailer(true);
+                                    }
+                                    if (res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_HAS_REVIEWS)) == 1) {
+                                        movie.setHasReviews(true);
+                                    }
                                     res.close();
                                     dbHelper.close();
 

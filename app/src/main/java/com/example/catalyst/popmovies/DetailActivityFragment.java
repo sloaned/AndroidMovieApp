@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.TextView;
 
 import com.example.catalyst.popmovies.data.DBHelper;
 import com.squareup.picasso.Picasso;
@@ -80,6 +81,14 @@ public class DetailActivityFragment extends Fragment {
             } else {
                 imageView.setImageResource(R.drawable.blankmovie);
             }
+            System.out.println(movie.getTitle() + " trailer?: " + movie.getHasTrailer());
+            if (movie.getHasTrailer()) {
+                showTrailerLink(rootView);
+            }
+            /*
+            if (movie.getHasReviews()) {
+                showReviewLink(rootView);
+            } */
 
             FlowTextView flowTextView = (FlowTextView) rootView.findViewById(R.id.detail_text);
             flowTextView.setText(movieInfo);
@@ -98,6 +107,11 @@ public class DetailActivityFragment extends Fragment {
             });
         }
         return rootView;
+    }
+
+    public void showTrailerLink(View rootView) {
+        TextView trailerLink = (TextView) rootView.findViewById(R.id.trailer_link);
+        trailerLink.setText("View trailer");
     }
 
 }
