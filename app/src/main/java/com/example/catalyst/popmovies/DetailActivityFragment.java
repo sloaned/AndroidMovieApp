@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.Log;
@@ -32,6 +33,7 @@ import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import uk.co.deanwild.flowtextview.FlowTextView;
@@ -41,7 +43,7 @@ public class DetailActivityFragment extends Fragment {
     private static final String LOG_TAG = DetailActivityFragment.class.getSimpleName();
 
     private Movie movie;
-    private String trailer;
+    private ArrayList<String> reviews = new ArrayList<String>();
 
     public DetailActivityFragment() {}
 
@@ -118,6 +120,9 @@ public class DetailActivityFragment extends Fragment {
                     onToggleStar(btn);
                 }
             });
+            UriBuilder uriBuilder = new UriBuilder();
+            String movieUrl = uriBuilder.getMovieUrl(movie.getTmdb_id());
+            getReviews(movieUrl);
         }
         return rootView;
     }
@@ -136,6 +141,12 @@ public class DetailActivityFragment extends Fragment {
     public void showReviewLink(View rootView) {
         TextView reviewLink = (TextView) rootView.findViewById(R.id.reviews_link);
         reviewLink.setText("Read reviews");
+        reviewLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickReviews();
+            }
+        });
     }
 
     public void onClickTrailer() {
@@ -146,30 +157,37 @@ public class DetailActivityFragment extends Fragment {
         System.out.println("youtube url = " + youtubeUrl);
 
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(youtubeUrl)));
-        /*Intent intent = new Intent(Intent.ACTION_VIEW);
 
-        if (intent.resolveActivity(getActivity().getPackageManager()) == null) {
-            System.out.println("no activity available");
-        } else {
-            startActivity(intent);
-        }*/
     }
 
-    public void getTrailerLink(String url) {
+    public void onClickReviews() {
+
+        System.out.println("Here's how many reviews there are: " + reviews.size());
+        DialogFragment dialog = ReviewFragment.newInstance(reviews);
+        if (dialog.getDialog() != null) {
+            dialog.getDialog().setCanceledOnTouchOutside(true);
+        }
+        dialog.show(getFragmentManager(), "dialog");
+    }
+
+    public void getReviews(String url) {
         String tag_json_obj = "json_obj_req";
-        final String MOVIE_TRAILERS = "trailers";
-        final String YOUTUBE_TRAILERS = "youtube";
-        final String YOUTUBE_SOURCE = "source";
+        final String MOVIE_REVIEWS = "reviews";
+        final String REVIEW_RESULTS = "results";
+        final String REVIEW_CONTENT = "content";
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try{
-                            JSONObject trailers = response.getJSONObject(MOVIE_TRAILERS);
-                            JSONArray  youtubeTrailers = trailers.getJSONArray(YOUTUBE_TRAILERS);
-                            JSONObject firstTrailer = youtubeTrailers.getJSONObject(0);
-                            String trailerSource = firstTrailer.getString(YOUTUBE_SOURCE);
-                            trailer = trailerSource;
+                            JSONObject allReviews = response.getJSONObject(MOVIE_REVIEWS);
+                            JSONArray reviewArray = allReviews.getJSONArray(REVIEW_RESULTS);
+                            for (int i = 0; i < reviewArray.length(); i++) {
+                                JSONObject review = reviewArray.getJSONObject(i);
+                                String reviewContent = review.getString(REVIEW_CONTENT);
+                                System.out.println(reviewContent);
+                                reviews.add(reviewContent);
+                            }
                         } catch (JSONException e) {
                             Log.e(LOG_TAG, "Error: " + e.getMessage());
                         }
@@ -180,7 +198,6 @@ public class DetailActivityFragment extends Fragment {
                 VolleyLog.d(LOG_TAG, "Error: " + error.getMessage());
             }
         });
-
         AppController.getInstance().addToRequestQueue(req, tag_json_obj);
     }
 

@@ -48,7 +48,7 @@ public class UriBuilder {
     }
 
     public String getTrailerUrl (String trailerString) {
-        String url = "https://www.youtube.com/watch?v=";
+        String url = "https://www.youtube.com/watch?v="; // https
         url += trailerString;
         return url;
     }
