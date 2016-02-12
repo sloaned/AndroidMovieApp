@@ -25,6 +25,7 @@ public class DBHelper extends SQLiteOpenHelper {
             MovieContract.MovieEntry.COLUMN_THUMBNAIL + " REAL, " +
             MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE + " REAL NOT NULL, " +
             MovieContract.MovieEntry.COLUMN_HAS_TRAILER + " NUMERIC NOT NULL, " +
+            MovieContract.MovieEntry.COLUMN_TRAILER + " REAL, " +
             MovieContract.MovieEntry.COLUMN_HAS_REVIEWS + " NUMERIC NOT NULL, " +
             MovieContract.MovieEntry.COLUMN_TMDB_ID + " REAL NOT NULL, " +
             MovieContract.MovieEntry.COLUMN_FAVORITE + " NUMERIC NOT NULL, " +
@@ -63,6 +64,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         if (movie.getHasTrailer()) {
             contentValues.put(MovieContract.MovieEntry.COLUMN_HAS_TRAILER, 1);
+            contentValues.put(MovieContract.MovieEntry.COLUMN_TRAILER, movie.getTrailer());
         } else {
             contentValues.put(MovieContract.MovieEntry.COLUMN_HAS_TRAILER, 0);
         }
@@ -114,6 +116,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(MovieContract.MovieEntry.COLUMN_TMDB_ID, movie.getTmdb_id());
         if (movie.getHasTrailer()) {
             contentValues.put(MovieContract.MovieEntry.COLUMN_HAS_TRAILER, 1);
+            contentValues.put(MovieContract.MovieEntry.COLUMN_TRAILER, movie.getTrailer());
         } else {
             contentValues.put(MovieContract.MovieEntry.COLUMN_HAS_TRAILER, 0);
         }
@@ -152,6 +155,7 @@ public class DBHelper extends SQLiteOpenHelper {
             movie.setFavorite_date(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE_DATE)));
             if (res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_HAS_TRAILER)) == 1) {
                 movie.setHasTrailer(true);
+                movie.setTrailer(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_TRAILER)));
             } else {
                 movie.setHasTrailer(false);
             }

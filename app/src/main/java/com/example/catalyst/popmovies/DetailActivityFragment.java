@@ -3,9 +3,11 @@ package com.example.catalyst.popmovies;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.LayerDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +17,17 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.catalyst.popmovies.data.DBHelper;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.text.ParseException;
@@ -31,6 +41,7 @@ public class DetailActivityFragment extends Fragment {
     private static final String LOG_TAG = DetailActivityFragment.class.getSimpleName();
 
     private Movie movie;
+    private String trailer;
 
     public DetailActivityFragment() {}
 
@@ -114,11 +125,63 @@ public class DetailActivityFragment extends Fragment {
     public void showTrailerLink(View rootView) {
         TextView trailerLink = (TextView) rootView.findViewById(R.id.trailer_link);
         trailerLink.setText("View trailer");
+        trailerLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickTrailer();
+            }
+        });
     }
 
     public void showReviewLink(View rootView) {
         TextView reviewLink = (TextView) rootView.findViewById(R.id.reviews_link);
         reviewLink.setText("Read reviews");
+    }
+
+    public void onClickTrailer() {
+        UriBuilder uriBuilder = new UriBuilder();
+
+        String youtubeUrl = uriBuilder.getTrailerUrl(movie.getTrailer());
+        System.out.println("trailer suffix = " + movie.getTrailer());
+        System.out.println("youtube url = " + youtubeUrl);
+
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(youtubeUrl)));
+        /*Intent intent = new Intent(Intent.ACTION_VIEW);
+
+        if (intent.resolveActivity(getActivity().getPackageManager()) == null) {
+            System.out.println("no activity available");
+        } else {
+            startActivity(intent);
+        }*/
+    }
+
+    public void getTrailerLink(String url) {
+        String tag_json_obj = "json_obj_req";
+        final String MOVIE_TRAILERS = "trailers";
+        final String YOUTUBE_TRAILERS = "youtube";
+        final String YOUTUBE_SOURCE = "source";
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try{
+                            JSONObject trailers = response.getJSONObject(MOVIE_TRAILERS);
+                            JSONArray  youtubeTrailers = trailers.getJSONArray(YOUTUBE_TRAILERS);
+                            JSONObject firstTrailer = youtubeTrailers.getJSONObject(0);
+                            String trailerSource = firstTrailer.getString(YOUTUBE_SOURCE);
+                            trailer = trailerSource;
+                        } catch (JSONException e) {
+                            Log.e(LOG_TAG, "Error: " + e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(LOG_TAG, "Error: " + error.getMessage());
+            }
+        });
+
+        AppController.getInstance().addToRequestQueue(req, tag_json_obj);
     }
 
 }

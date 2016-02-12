@@ -239,6 +239,13 @@ public class MovieFragment extends Fragment {
 
                                     movie.setFavorite(res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE)));
                                     movie.setId(res.getInt(res.getColumnIndex(MovieContract.MovieEntry._ID)));
+                                    if (res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_HAS_TRAILER)) == 1) {
+                                        movie.setHasTrailer(true);
+                                        movie.setTrailer(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_TRAILER)));
+                                    }
+                                    if (res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_HAS_REVIEWS)) == 1) {
+                                        movie.setHasReviews(true);
+                                    }
                                     res.close();
                                     dbHelper.close();
 
@@ -288,6 +295,10 @@ public class MovieFragment extends Fragment {
 
                             if (youtubeTrailers.length() > 0) {
                                 film.setHasTrailer(true);
+                                JSONObject firstTrailer = youtubeTrailers.getJSONObject(0);
+                                String youtubeSuffix = firstTrailer.getString(YOUTUBE_SOURCE);
+                                System.out.println("youtube suffix for " + film.getTitle() + " = " + youtubeSuffix);
+                                film.setTrailer(firstTrailer.getString(YOUTUBE_SOURCE));
                             }
 
                             JSONObject reviews = response.getJSONObject(MOVIE_REVIEWS);
@@ -397,6 +408,7 @@ public class MovieFragment extends Fragment {
                                     movie.setId(res.getInt(res.getColumnIndex(MovieContract.MovieEntry._ID)));
                                     if (res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_HAS_TRAILER)) == 1) {
                                         movie.setHasTrailer(true);
+                                        movie.setTrailer(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_TRAILER)));
                                     }
                                     if (res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_HAS_REVIEWS)) == 1) {
                                         movie.setHasReviews(true);

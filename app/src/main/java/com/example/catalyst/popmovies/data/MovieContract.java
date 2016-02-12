@@ -52,6 +52,8 @@ public class MovieContract {
 
         public static final String COLUMN_TMDB_ID = "tmdb_id";
 
+        public static final String COLUMN_TRAILER = "trailer";
+
     }
 
 

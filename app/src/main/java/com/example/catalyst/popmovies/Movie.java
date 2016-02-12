@@ -25,6 +25,7 @@ public class Movie implements Serializable {
     private int favorite;
     private String favorite_date;
     private boolean hasTrailer;
+    private String trailer;
     private boolean hasReviews;
     private String tmdb_id;
 
@@ -102,6 +103,8 @@ public class Movie implements Serializable {
 
     public void setHasTrailer(boolean hasTrailer) { this.hasTrailer = hasTrailer; }
     public boolean getHasTrailer() { return hasTrailer; }
+    public void setTrailer(String trailer) { this.trailer = trailer; }
+    public String getTrailer() { return trailer; }
     public void setHasReviews(boolean hasReviews) { this.hasReviews = hasReviews; }
     public boolean getHasReviews() { return hasReviews; }
     public void setTmdb_id(String tmdb_id) { this.tmdb_id = tmdb_id; }
