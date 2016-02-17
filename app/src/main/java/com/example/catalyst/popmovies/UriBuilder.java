@@ -52,4 +52,12 @@ public class UriBuilder {
         url += trailerString;
         return url;
     }
+
+    public String getCountryUrl (String countryCode, String cert) {
+        String url = "https://api.themoviedb.org/3/discover/movie?";
+        url += "certification_country=" + countryCode;
+        url += "&certification.lte=" + cert;
+        url += "&api_key=" + BuildConfig.APIKEY;
+        return url;
+    }
 }

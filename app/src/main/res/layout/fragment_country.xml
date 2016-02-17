@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RadioGroup
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:id="@+id/countrylist"
+        android:checkedButton="@+id/country_usa"
+        android:layout_weight="1">
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/country_usa"
+            android:text="@string/country_label_usa"/>
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/country_uk"
+            android:text="@string/country_label_uk"/>
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/country_germany"
+            android:text="@string/country_label_germany"/>
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/country_canada"
+            android:text="@string/country_label_canada"/>
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/country_australia"
+            android:text="@string/country_label_australia"/>
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/country_france"
+            android:text="@string/country_label_france"/>
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/country_india"
+            android:text="@string/country_label_india"/>
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/country_new_zealand"
+            android:text="@string/country_label_new_zealand"/>
+    </RadioGroup>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rating_certifications"
+        android:layout_weight="1"
+        android:checkedButton="@+id/us_rating_nc17">
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/us_rating_g"
+            android:text="@string/us_rating_g"/>
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/us_rating_pg"
+            android:text="@string/us_rating_pg"/>
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/us_rating_pg13"
+            android:text="@string/us_rating_pg13"/>
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/us_rating_r"
+            android:text="@string/us_rating_r"/>
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/us_rating_nc17"
+            android:text="@string/us_rating_nc17"/>
+
+    </RadioGroup>
+
+
+</LinearLayout>

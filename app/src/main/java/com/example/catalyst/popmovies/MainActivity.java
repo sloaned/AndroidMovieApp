@@ -9,13 +9,18 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 
 import com.example.catalyst.popmovies.data.MovieContract;
 
@@ -25,12 +30,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-       /* if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new MovieFragment())
-                    .commit();
-        }*/
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -57,9 +56,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-
-
-
 
         SearchManager searchManager = (SearchManager) getSystemService (Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
@@ -103,10 +99,6 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
-        else if (id == R.id.action_home) {
-
-        }
-
         if (id == R.id.action_home) {
 
             System.out.println("Home button clicked");
@@ -116,14 +108,18 @@ public class MainActivity extends AppCompatActivity {
 
             this.setIntent(null);
             startActivity(new Intent(this, MainActivity.class));
-           /* Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
-            if (fragment != null) {
-                getSupportFragmentManager().beginTransaction().remove(fragment).commit();
-            }
 
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new MovieFragment())
-                    .commit(); // container */
+            return true;
+        }
+
+        if (id == R.id.action_country) {
+            System.out.println("country button clicked");
+            DialogFragment dialog = CountryFragment.newInstance();
+            if (dialog.getDialog() != null) {
+                dialog.getDialog().setCanceledOnTouchOutside(true);
+            }
+            dialog.show(this.getSupportFragmentManager(), "dialog");
+            //startActivity(this, CountryActivity.class));
             return true;
         }
 
@@ -134,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         }*/
-
 
         return super.onOptionsItemSelected(item);
     }

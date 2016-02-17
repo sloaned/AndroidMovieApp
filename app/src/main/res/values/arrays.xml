@@ -14,4 +14,76 @@
         <item>@string/pref_sort_low_rating</item>
         <item>@string/pref_sort_favorites</item>
     </string-array>
+    <string-array name="countries">
+        <item>@string/country_label_australia</item>
+        <item>@string/country_label_canada</item>
+        <item>@string/country_label_france</item>
+        <item>@string/country_label_germany</item>
+        <item>@string/country_label_india</item>
+        <item>@string/country_label_new_zealand</item>
+        <item>@string/country_label_uk</item>
+        <item>@string/country_label_usa</item>
+    </string-array>
+    <string-array name="usa_certs">
+        <item>@string/us_rating_g</item>
+        <item>@string/us_rating_pg</item>
+        <item>@string/us_rating_pg13</item>
+        <item>@string/us_rating_r</item>
+        <item>@string/us_rating_nc17</item>
+    </string-array>
+    <string-array name="uk_certs">
+        <item>@string/uk_rating_u</item>
+        <item>@string/uk_rating_pg</item>
+        <item>@string/uk_rating_12</item>
+        <item>@string/uk_rating_15</item>
+        <item>@string/uk_rating_18</item>
+    </string-array>
+    <string-array name="germany_certs">
+        <item>@string/ger_rating_0</item>
+        <item>@string/ger_rating_6</item>
+        <item>@string/ger_rating_12</item>
+        <item>@string/ger_rating_16</item>
+        <item>@string/ger_rating_18</item>
+    </string-array>
+    <string-array name="canada_certs">
+        <item>@string/can_rating_g</item>
+        <item>@string/can_rating_pg</item>
+        <item>@string/can_rating_14a</item>
+        <item>@string/can_rating_18a</item>
+        <item>@string/can_rating_r</item>
+        <item>@string/can_rating_a</item>
+    </string-array>
+    <string-array name="aus_certs">
+        <item>@string/aus_rating_g</item>
+        <item>@string/aus_rating_pg</item>
+        <item>@string/aus_rating_ma</item>
+        <item>@string/aus_rating_m</item>
+        <item>@string/aus_rating_r</item>
+        <item>@string/aus_rating_x</item>
+    </string-array>
+    <string-array name="fr_certs">
+        <item>@string/fr_rating_u</item>
+        <item>@string/fr_rating_10</item>
+        <item>@string/fr_rating_12</item>
+        <item>@string/fr_rating_16</item>
+        <item>@string/fr_rating_18</item>
+    </string-array>
+    <string-array name="india_certs">
+        <item>@string/india_rating_u</item>
+        <item>@string/india_rating_ua</item>
+        <item>@string/india_rating_a</item>
+    </string-array>
+
+    <string-array name="nz_certs">
+        <item>@string/nz_rating_g</item>
+        <item>@string/nz_rating_pg</item>
+        <item>@string/nz_rating_m</item>
+        <item>@string/nz_rating_r</item>
+        <item>@string/nz_rating_rp13</item>
+        <item>@string/nz_rating_rp16</item>
+        <item>@string/nz_rating_13</item>
+        <item>@string/nz_rating_15</item>
+        <item>@string/nz_rating_16</item>
+        <item>@string/nz_rating_18</item>
+    </string-array>
 </resources>

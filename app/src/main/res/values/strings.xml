@@ -27,7 +27,67 @@
     <string name="action_home">Home</string>
     <string name="pref_saved_search">savedSearch</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="country_label_usa">USA</string>
+    <string name="country_label_uk">UK</string>
+    <string name="country_label_germany">Germany</string>
+    <string name="country_label_canada">Canada</string>
+    <string name="country_label_australia">Australia</string>
+    <string name="country_label_france">France</string>
+    <string name="country_label_new_zealand">New Zealand</string>
+    <string name="country_label_india">India</string>
+
+    <string name="us_rating_r">R</string>
+    <string name="us_rating_pg13">PG-13</string>
+    <string name="us_rating_nc17">NC-17</string>
+    <string name="us_rating_pg">PG</string>
+    <string name="us_rating_g">G</string>
+
+    <string name="uk_rating_u">U</string>
+    <string name="uk_rating_pg">PG</string>
+    <string name="uk_rating_12">12</string>
+    <string name="uk_rating_15">15</string>
+    <string name="uk_rating_18">18</string>
+
+    <string name="ger_rating_0">0</string>
+    <string name="ger_rating_6">6</string>
+    <string name="ger_rating_12">12</string>
+    <string name="ger_rating_16">16</string>
+    <string name="ger_rating_18">18</string>
+
+    <string name="can_rating_g">G</string>
+    <string name="can_rating_pg">PG</string>
+    <string name="can_rating_14a">14A</string>
+    <string name="can_rating_18a">18A</string>
+    <string name="can_rating_r">R</string>
+    <string name="can_rating_a">A</string>
+
+    <string name="aus_rating_g">G</string>
+    <string name="aus_rating_pg">PG</string>
+    <string name="aus_rating_ma">MA</string>
+    <string name="aus_rating_m">M</string>
+    <string name="aus_rating_r">R</string>
+    <string name="aus_rating_x">X</string>
+
+    <string name="fr_rating_u">U</string>
+    <string name="fr_rating_10">10</string>
+    <string name="fr_rating_12">12</string>
+    <string name="fr_rating_16">16</string>
+    <string name="fr_rating_18">18</string>
+
+    <string name="india_rating_u">U</string>
+    <string name="india_rating_ua">U/A</string>
+    <string name="india_rating_a">A</string>
+
+    <string name="nz_rating_g">G</string>
+    <string name="nz_rating_pg">PG</string>
+    <string name="nz_rating_m">M</string>
+    <string name="nz_rating_r">R</string>
+    <string name="nz_rating_rp13">RP13</string>
+    <string name="nz_rating_rp16">RP16</string>
+    <string name="nz_rating_13">13</string>
+    <string name="nz_rating_15">15</string>
+    <string name="nz_rating_16">16</string>
+    <string name="nz_rating_18">18</string>
+
 
 </resources>

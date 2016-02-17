@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
@@ -125,6 +126,17 @@ public class SearchActivity extends AppCompatActivity {
            /* getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new MovieFragment())
                     .commit(); // container */
+            return true;
+        }
+
+        if (id == R.id.action_country) {
+            System.out.println("country button clicked");
+            DialogFragment dialog = CountryFragment.newInstance();
+            if (dialog.getDialog() != null) {
+                dialog.getDialog().setCanceledOnTouchOutside(true);
+            }
+            dialog.show(this.getSupportFragmentManager(), "dialog");
+            //startActivity(this, CountryActivity.class));
             return true;
         }
 
