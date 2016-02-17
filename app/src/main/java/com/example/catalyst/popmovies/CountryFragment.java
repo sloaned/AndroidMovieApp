@@ -4,16 +4,33 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.DialogPreference;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.catalyst.popmovies.data.DBHelper;
+import com.example.catalyst.popmovies.data.MovieContract;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -24,6 +41,7 @@ public class CountryFragment extends DialogFragment {
 
     //private ArrayList<String> countries = new ArrayList<String>();
 
+    private final String LOG_TAG = CountryFragment.class.getSimpleName();
     public CountryFragment() {}
 
     @Override
@@ -165,24 +183,18 @@ public class CountryFragment extends DialogFragment {
 
                         }
 
-                        switch (selectedRating) {
-                            case ("G"):
-                                rating = "G";
-                                break;
-                            case ("PG"):
-                                rating = "PG";
-                                break;
-                            case ("R"):
-                                rating = "R";
-                                break;
-                            default:
-                                rating = "R";
-                                break;
-                        }
+                        rating = selectedRating;
 
-                        getMoviesByCountry(countryCode, rating);
+                        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+                        editor.putString(getString(R.string.pref_search_key), (String) null);
+                        editor.putString(getString(R.string.country_filter), countryCode);
+                        editor.putString(getString(R.string.certification_filter), rating);
+                        editor.apply();
 
+                        getActivity().setIntent(null);
+                        startActivity(new Intent(getActivity(), MainActivity.class));
 
+                        //getMoviesByCountry(countryCode, rating);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -208,7 +220,5 @@ public class CountryFragment extends DialogFragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public void getMoviesByCountry(String countryCode, String rating) {
 
-    }
 }

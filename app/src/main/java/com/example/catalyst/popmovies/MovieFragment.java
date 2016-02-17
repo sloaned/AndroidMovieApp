@@ -65,9 +65,7 @@ public class MovieFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
-
         setHasOptionsMenu(true);
-
     }
 
     @Override
@@ -76,13 +74,10 @@ public class MovieFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        //movieAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_pop_movies, R.id.list_pop_movies_posterview, new ArrayList<String>()); // new ArrayList<String>()
         listView = (ListView) rootView.findViewById(R.id.listview_movies);
         adapter = new CustomListAdapter(this.getActivity(), movieList);
-       adapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
         listView.setAdapter(adapter);
-
-
 
        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -98,15 +93,12 @@ public class MovieFragment extends Fragment {
         return rootView;
     }
 
-   /* @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.moviefragment, menu);
-    } */
-
     @Override
     public void onStart() {
         super.onStart();
         Intent intent = getActivity().getIntent();
+        String url;
+        UriBuilder uriBuilder = new UriBuilder();
         if (intent != null && Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             System.out.println("query made for: " + query);
@@ -118,35 +110,42 @@ public class MovieFragment extends Fragment {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String storedSearch = preferences.getString(getString(R.string.pref_search_key), null);
         System.out.println("storedSearch = " + storedSearch);
+
+        /* used to initiate search upon app resume */
         if (storedSearch != null) {
             intent.setAction(Intent.ACTION_SEARCH).putExtra(SearchManager.QUERY, storedSearch);
         }
-        if (intent != null && Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            movieList.clear();
-            adapter.notifyDataSetChanged();
+        movieList.clear();
+        adapter.notifyDataSetChanged();
+
+        if (intent != null && Intent.ACTION_SEARCH.equals(intent.getAction())) { // perform a search
             String query = intent.getStringExtra(SearchManager.QUERY);
-
             query = query.replace(" ", "%20");
-
-            searchMovies(query);
+            url = uriBuilder.getSearchUrl(query);
+            updateMovies(url);
         } else {
-            movieList.clear();
-            adapter.notifyDataSetChanged();
+
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             String sortOrder = prefs.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_default));
-            if (!sortOrder.equals("favorites")) {
-                updateMovies();
+            String country = prefs.getString(getString(R.string.country_filter), (String) null);
+            if (country != null && !country.equals((String) null)) { // filter movies by country
+                String rating = prefs.getString(getString(R.string.certification_filter), (String) null);
+                url = uriBuilder.getCountryUrl(country, rating);
+                updateMovies(url);
+            }
+            else if (!sortOrder.equals("favorites")) { 
+                url = uriBuilder.getUrl(sortOrder);
+                updateMovies(url);
             } else {
                 showFavorites();
             }
-
         }
 
     }
 
-    private void updateMovies() {
+    private void updateMovies(String url) {
         adapter.clear();
-        getMovieData(1);
+        getMovieData(url);
         /*for (int i = 2; i <= 5 && i <= numPages; i++) {
             getMovieData(i);
         }*/
@@ -176,102 +175,6 @@ public class MovieFragment extends Fragment {
         }
     }
 
-    protected void searchMovies(String query) {
-        ArrayList<Movie> searchResults = new ArrayList<Movie>();
-        UriBuilder uriBuilder = new UriBuilder();
-        String url = uriBuilder.getSearchUrl(query);
-        String tag_json_obj = "json_obj_req";
-        final String TMDB_RESULTS = "results";
-
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(LOG_TAG, response.toString());
-
-                        JSONArray movieArray = new JSONArray();
-
-                        try{
-                            movieArray = response.getJSONArray(TMDB_RESULTS);
-                        } catch(JSONException e) {
-                            Log.e(LOG_TAG, "Error: " + e.getMessage());
-                        }
-                        for(int i = 0; i < movieArray.length(); i++) {
-                            String title;
-                            String overview;
-                            String release_date;
-                            double vote_average;
-                            String poster = null;
-                            String thumbnail = null;
-                            JSONObject film = new JSONObject();
-                            try {
-                                film = movieArray.getJSONObject(i);
-                                title = film.getString("title");
-                                title = title.replaceAll("\"", "\"\"");
-                                overview = film.getString("overview");
-                                overview = overview.replaceAll("\"", "\"\"");
-                                release_date = film.getString("release_date");
-                                vote_average = film.getDouble("vote_average");
-
-                                if(!film.getString("poster_path").equals("null")) {
-                                    poster = "http://image.tmdb.org/t/p/" + "w185/" + film.getString("poster_path");
-                                    thumbnail = "http://image.tmdb.org/t/p/" + "w45/" + film.getString("poster_path");
-                                }
-
-                                Movie movie = new Movie();
-                                movie.setTitle(title);
-                                movie.setRelease_date(release_date);
-                                movie.setVote_average(vote_average);
-                                movie.setOverview(overview);
-                                movie.setPoster(poster);
-                                movie.setThumbnail(thumbnail);
-                                movie.setTmdb_id(film.getString("id"));
-
-                                DBHelper dbHelper = new DBHelper(getContext());
-                                if(!dbHelper.doesMovieExist(movie)) {
-                                    dbHelper.close();
-                                    getSingleMovieData(movie);
-                                } else {
-                                    System.out.println("already in db: " + movie.getTitle());
-
-                                    Cursor res = dbHelper.getMovieByTMDBId(movie);
-                                    res.moveToFirst();
-
-                                    movie.setFavorite(res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE)));
-                                    movie.setId(res.getInt(res.getColumnIndex(MovieContract.MovieEntry._ID)));
-                                    if (res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_HAS_TRAILER)) == 1) {
-                                        movie.setHasTrailer(true);
-                                        movie.setTrailer(res.getString(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_TRAILER)));
-                                    }
-                                    if (res.getInt(res.getColumnIndex(MovieContract.MovieEntry.COLUMN_HAS_REVIEWS)) == 1) {
-                                        movie.setHasReviews(true);
-                                    }
-                                    res.close();
-                                    dbHelper.close();
-
-                                    movieList.add(movie);
-                                }
-
-                            } catch (JSONException e) {
-                                Log.e(LOG_TAG, "Error: " + e.getMessage());
-                            }
-
-                            adapter.notifyDataSetChanged();
-                        }
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(LOG_TAG, "Error: " + error.getMessage());
-
-            }
-        });
-
-        AppController.getInstance().addToRequestQueue(req, tag_json_obj);
-
-    }
-
     public void getSingleMovieData(Movie movie) {
         UriBuilder uriBuilder = new UriBuilder();
         String url = uriBuilder.getMovieUrl(movie.getTmdb_id());
@@ -296,8 +199,6 @@ public class MovieFragment extends Fragment {
                             if (youtubeTrailers.length() > 0) {
                                 film.setHasTrailer(true);
                                 JSONObject firstTrailer = youtubeTrailers.getJSONObject(0);
-                                String youtubeSuffix = firstTrailer.getString(YOUTUBE_SOURCE);
-                                System.out.println("youtube suffix for " + film.getTitle() + " = " + youtubeSuffix);
                                 film.setTrailer(firstTrailer.getString(YOUTUBE_SOURCE));
                             }
 
@@ -337,12 +238,9 @@ public class MovieFragment extends Fragment {
     }
 
 
-    public void getMovieData(int queryPage) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String sortOrder = prefs.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_default));
-        UriBuilder uriBuilder = new UriBuilder();
-        String url = uriBuilder.getUrl(sortOrder, queryPage);
-        final int page = queryPage;
+    public void getMovieData(String url) {
+
+        //final int page = queryPage;
         String tag_json_obj = "json_obj_req";
         final String TMDB_RESULTS = "results";
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null,
@@ -354,11 +252,6 @@ public class MovieFragment extends Fragment {
                         JSONArray movieArray = new JSONArray();
 
                         try{
-                            if(page == 1){
-                                numPages = response.getInt("total_pages");
-                                System.out.println("numPages = " + numPages);
-                            }
-
                             movieArray = response.getJSONArray(TMDB_RESULTS);
                         } catch(JSONException e) {
                             Log.e(LOG_TAG, "Error: " + e.getMessage());
@@ -366,8 +259,6 @@ public class MovieFragment extends Fragment {
                         for(int i = 0; i < MOVIES_PER_PAGE && i < movieArray.length(); i++) {
                             String title;
                             String overview;
-                            String release_date;
-                            double vote_average;
                             String poster = null;
                             String thumbnail = null;
                             JSONObject film = new JSONObject();
@@ -377,18 +268,15 @@ public class MovieFragment extends Fragment {
                                 title = title.replaceAll("\"", "\"\"");
                                 overview = film.getString("overview");
                                 overview = overview.replaceAll("\"", "\"\"");
-                                release_date = film.getString("release_date");
-                                vote_average = film.getDouble("vote_average");
                                 if(!film.getString("poster_path").equals("null")) {
                                     poster = "http://image.tmdb.org/t/p/" + "w185/" + film.getString("poster_path");
                                     thumbnail = "http://image.tmdb.org/t/p/" + "w45/" + film.getString("poster_path");
                                 }
 
-
                                 Movie movie = new Movie();
                                 movie.setTitle(title);
-                                movie.setRelease_date(release_date);
-                                movie.setVote_average(vote_average);
+                                movie.setRelease_date(film.getString("release_date"));
+                                movie.setVote_average(film.getDouble("vote_average"));
                                 movie.setOverview(overview);
                                 movie.setPoster(poster);
                                 movie.setThumbnail(thumbnail);
@@ -419,19 +307,12 @@ public class MovieFragment extends Fragment {
                                     movieList.add(movie);
                                 }
 
-
-
                             } catch (JSONException e) {
                                 Log.e(LOG_TAG, "Error: " + e.getMessage());
                             }
 
                         }
-                       /* for (int i = 0 + (20*(page-1)); i < (MOVIES_PER_PAGE + (MOVIES_PER_PAGE *(page-1))) && i < movieArray.length() + (MOVIES_PER_PAGE *(page-1)); i++) {
-                            movieAdapter.add(movies[i].getTitle());
-                        }*/
-
                         adapter.notifyDataSetChanged();
-
 
                     }
                 }, new Response.ErrorListener() {
@@ -443,17 +324,4 @@ public class MovieFragment extends Fragment {
 
         AppController.getInstance().addToRequestQueue(req, tag_json_obj);
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        /*
-        if (id == R.id.action_refresh) {
-            updateMovies();
-            return true;
-        }*/
-
-        return super.onOptionsItemSelected(item);
-    }
-
 }

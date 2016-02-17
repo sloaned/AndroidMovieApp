@@ -26,6 +26,8 @@
     <string name="pref_search_label">Search</string>
     <string name="action_home">Home</string>
     <string name="pref_saved_search">savedSearch</string>
+    <string name="country_filter">countryFilter</string>
+    <string name="certification_filter">certificationFilter</string>
 
     <string name="country_label_usa">USA</string>
     <string name="country_label_uk">UK</string>
@@ -82,8 +84,6 @@
     <string name="nz_rating_pg">PG</string>
     <string name="nz_rating_m">M</string>
     <string name="nz_rating_r">R</string>
-    <string name="nz_rating_rp13">RP13</string>
-    <string name="nz_rating_rp16">RP16</string>
     <string name="nz_rating_13">13</string>
     <string name="nz_rating_15">15</string>
     <string name="nz_rating_16">16</string>

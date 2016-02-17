@@ -95,6 +95,7 @@ public class DetailActivity extends AppCompatActivity {
             System.out.println("Home button clicked");
             SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
             editor.putString(getString(R.string.pref_search_key), (String) null);
+            editor.putString(getString(R.string.country_filter), (String) null);
             editor.apply();
 
             this.setIntent(null);
